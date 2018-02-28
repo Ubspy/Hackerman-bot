@@ -1,0 +1,19 @@
+{
+  "name": "hackerman-bot",
+  "version": "1.0.0",
+  "description": "Hackerman bot",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ubspy/Hackerman-bot.git"
+  },
+  "author": "Jack Moren",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Ubspy/Hackerman-bot/issues"
+  },
+  "homepage": "https://github.com/Ubspy/Hackerman-bot#readme"
+}
