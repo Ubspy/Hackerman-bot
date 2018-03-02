@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/Ubspy/Hackerman-bot/issues"
   },
-  "homepage": "https://github.com/Ubspy/Hackerman-bot#readme"
+  "homepage": "https://github.com/Ubspy/Hackerman-bot#readme",
+  "dependencies": {
+    "discord.js": "^11.3.0"
+  }
 }
