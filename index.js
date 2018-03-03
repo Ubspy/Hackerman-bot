@@ -25,10 +25,9 @@ client.on('message', message =>
   //If the message is in a bot command channel
   var correctChannel = commandChannels.indexOf(message.channel.id) > -1;
 
+  //If both of those cases meet
   if(correctAuthor && correctChannel)
   {
-    console.log(message.toString());
-
     //String to hold message content
     var messageStr = message.toString();
 
@@ -41,6 +40,7 @@ client.on('message', message =>
       //String to hold commands
       var command = messageStr.substring(1, endingIndex);
 
+      //If it's the clear command, run the clear command funciton
       if(command == "clear")
       {
         Commands.clearChannel(message);
