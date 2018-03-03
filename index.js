@@ -13,7 +13,7 @@ client.on('ready', () =>
   console.log(`Logged in as ${client.user.tag}`);
 
   //Gets command channels where you put bot commands in
-  commandChannels = getCommandChannels();
+  commandChannels = Commands.getCommandChannels(client);
 });
 
 //On a message, run this function
@@ -47,27 +47,16 @@ client.on('message', message =>
       }
     }
   }
-});
 
-function getCommandChannels()
-{
-  //Variable of all channels the bot is connected to
-  var activeChannels = client.channels.array();
-
-  //Variable for command command channels
-  var commandChannels = [];
-
-  //Loops through all channels
-  for(var i = 0; i < activeChannels.length; i++)
+  //Just if correct author
+  if(correctAuthor)
   {
-    if(activeChannels[i].name == "bot-commands")
+    if(messageStr.indexOf('r/') > -1)
     {
-      commandChannels.push(activeChannels[i].id);
+      Commands.linkSubreddit(message);
     }
   }
-
-  return commandChannels;
-}
+});
 
 //Login command with bot token
 client.login('NDE4ODQzNzU2NDE1MDI1MTUy.DXneNg.qBxt2AQKrkJ36bKU8sDJyJVIZSU');
