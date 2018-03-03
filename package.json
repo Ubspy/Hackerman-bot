@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/Ubspy/Hackerman-bot#readme",
   "dependencies": {
-    "discord.js": "^11.3.0"
+    "discord.js": "^11.3.0",
+    "sleep": "^5.1.1"
   }
 }
