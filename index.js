@@ -25,12 +25,12 @@ client.on('message', message =>
   //If the message is in a bot command channel
   var correctChannel = commandChannels.indexOf(message.channel.id) > -1;
 
+  //String to hold message content
+  var messageStr = message.toString();
+
   //If both of those cases meet
   if(correctAuthor && correctChannel)
   {
-    //String to hold message content
-    var messageStr = message.toString();
-
     //If the first character is '!' implying it's a command
     if(messageStr[0] == '!')
     {
