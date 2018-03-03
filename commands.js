@@ -1,17 +1,21 @@
 const sleep = require('sleep');
 
-module.exports.clearChannel = function (message)
+//Clears the chat logs
+module.exports.clearChannel = function(message)
 {
-  message.channel.fetchMessages().then(function(fetched)
+  //Gets all messages in the bot-commands channel
+  message.channel.fetchMessages().then(function(messages)
   {
-    var messages = fetched.array();
-
-
-    for(var i = 0; i < messages.length; i++)
-    {
-      messages[i].delete();
-    }
+    //Bulk deletes all the messages
+    message.channel.bulkDelete(messages);
   });
-  
-  message.channel.send("Chat log has been cleared!");
+
+  //Sends a message
+  message.channel.send("Chat log has been cleared!").then(function(thisMessage)
+  {
+    //After the message it sent, it waits three seconds and deletes itself
+    sleep.sleep(3);
+    thisMessage.delete();
+  });
+
 }
