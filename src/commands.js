@@ -1,7 +1,7 @@
 const sleep = require('sleep');
 
 //Clears the chat logs
-module.exports.clearChannel = function(message)
+function clearMessages(message)
 {
   //Gets all messages in the bot-commands channel
   message.channel.fetchMessages().then(function(messages)
@@ -19,8 +19,7 @@ module.exports.clearChannel = function(message)
   });
 }
 
-module.exports.linkSubreddit = function(message)
-{
+function linkSubreddit(message) {
   //String of the message
   var messageStr = message.toString();
 
@@ -33,10 +32,10 @@ module.exports.linkSubreddit = function(message)
   //Substring for the actual subreddit
   var subredditStr = subCutoff.substring(0, endingIndex);
 
-  message.channel.send(`${message.author} OwO, what's this? I see a mention of a subreddit! Here's a link: http://reddit.com/${subredditStr}`);
+  message.channel.send("OwO, what's this? I see a mention of a subreddit! Here's a link: http://reddit.com/"+subredditStr, {reply: message.author});
 }
 
-module.exports.getCommandChannels = function(client)
+function getCommandChannels(client) 
 {
   //Variable of all channels the bot is connected to
   var activeChannels = client.channels.array();
@@ -55,3 +54,6 @@ module.exports.getCommandChannels = function(client)
 
   return commandChannels;
 }
+module.exports.commandChannels = getCommandChannels
+module.exports.linkReddit = linkSubreddit
+module.exports.clear = clearMessages

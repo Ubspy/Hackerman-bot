@@ -3,7 +3,7 @@ const Discord = require('discord.js');
 const client = new Discord.Client();
 
 //Constant for commands file
-const Commands = require('./commands.js');
+const {commands} = require('./src/');
 
 var commandChannels = [];
 
@@ -59,4 +59,4 @@ client.on('message', message =>
 });
 
 //Login command with bot token
-client.login('NDE4ODQzNzU2NDE1MDI1MTUy.DXneNg.qBxt2AQKrkJ36bKU8sDJyJVIZSU');
+client.login();
