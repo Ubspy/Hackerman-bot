@@ -59,4 +59,4 @@ client.on('message', message =>
 });
 
 //Login command with bot token
-client.login('NDE4ODQzNzU2NDE1MDI1MTUy.DXneNg.qBxt2AQKrkJ36bKU8sDJyJVIZSU');
+//TODO: Get token from file
