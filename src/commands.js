@@ -2,7 +2,7 @@ const sleep = require('sleep');
 const {TextChannel, GuildChanne} = require('discord.js')
 //Clears the chat logs
 function bulkDelete(textchan) {
-	if (textchan instanceof TextChannel && textchan.guild.me.hasPermission("MANAGE_MESSAGES") || textchan.memberPermissions(textchan.guild.me).has("MANAGE_MESSAGES")) {
+	if (textchan instanceof TextChannel && textchan.memberPermissions(textchan.guild.me).has("MANAGE_MESSAGES")) {
 		return true
 		//Gets all messages in the bot-commands channel
 		textchan.fetchMessages().then(function(messages) {
