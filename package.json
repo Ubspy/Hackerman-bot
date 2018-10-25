@@ -1,24 +1,23 @@
 {
   "name": "hackerman-bot",
-  "version": "1.0.0",
-  "description": "Hackerman bot",
-  "main": "./src/index.js",
+  "version": "2.0.0",
+  "description": "udspy's discordbot",
+  "main": "Bot.js",
+  "dependencies": {
+    "discord.js": "^11.4.2"
+  },
+  "devDependencies": {},
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node ./src/index.js"
+    "test": "node Bot.js"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Ubspy/Hackerman-bot.git"
   },
-  "author": "Jack Moren, drhacko",
+  "author": "Jack Moren",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/Ubspy/Hackerman-bot/issues"
   },
-  "homepage": "https://github.com/Ubspy/Hackerman-bot#readme",
-  "dependencies": {
-    "discord.js": "^11.3.0",
-    "sleep": "^5.1.1"
-  }
+  "homepage": "https://github.com/Ubspy/Hackerman-bot#readme"
 }

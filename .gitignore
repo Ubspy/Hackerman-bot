@@ -1,4 +1,4 @@
-config/Bot.json
+config/
 # Logs
 logs
 *.log
