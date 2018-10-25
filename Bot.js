@@ -2,8 +2,8 @@ const Discord = require('discord.js');
 const client = new Discord.Client();
 const {prefix, token} = require("./config/Bot.json")
 const hacker = require('./src/')
+var blacklist = []
 client.on('message', (msg) => {
-	console.log("Blacklist: "+blacklist)
 	if (msg.author.id != client.user.id && !blacklist.includes(msg.channel.id)) {
 		switch (msg.content) {
 			case prefix+"clear":
