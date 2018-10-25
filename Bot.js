@@ -1,3 +1,15 @@
+/**
+ * @file Bot.js
+ * @version 2.0.0
+ * @author devr2k, ubspy
+ * @license MIT
+ * @description
+ * * Fill out config/Bot.json
+ * * Commands:
+ * * * clear 									`Attempts to delete all messages in the channel.`
+ * * * blacklist/unblacklist 	`ignore the commands in the channel "blacklist" was delcared`
+ * * * r/unixporn							`The bot listens for any shorthand sub reddit links and automatically sends a hyperlink to it.`
+ */
 const Discord = require('discord.js');
 const client = new Discord.Client();
 const {prefix, token} = require("./config/Bot.json")
@@ -8,7 +20,6 @@ client.on('message', (msg) => {
 		switch (msg.content) {
 			case prefix+"clear":
 				(msg.guild.me.hasPermission("MANAGE_MESSAGES") ? msg.channel.fetchMessages().then((msgs) => {msg.channel.bulkDelete(msgs)}): msg.reply("I don't have perms for that!"))
-				
 				break;
 			case prefix+"blacklist":
 				(msg.member.hasPermission("ADMINISTRATOR") ? blacklist.push(msg.channel.id):msg.reply("you need admin to do that."))
