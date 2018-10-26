@@ -16,15 +16,18 @@ const fs = require('fs')
 const readline = require('readline')
 const client = new Discord.Client()
 const hacker = require('./src/')
+try {
 var {prefix, token} = require("./config/Bot.json")
+} catch(err) {
+	setup()
+}
 var blacklist = []
 
 /**
  * Initial Start
  */
- console.log("Hackerman-bot by ubspy")
-function init() {
-	console.log("Hackerman-bot init script 1.0..")
+ console.log("Hackerman-bot by ubspy & devr2k")
+function setup() {
 		var conf = {
 			prefix:"",
 			token:""
@@ -41,15 +44,14 @@ function init() {
 			})
 		})
 		rl.on('close', () => {
-			fs.writeFile('./config/Bot.json', (JSON.stringify(conf)), 'utf8', () => {console.log("Saving.."); begin()})
+			fs.writeFile('./config/Bot.json', (JSON.stringify(conf)), 'utf8', () => {console.log("Saving..")})
+			client.login(conf.token)
 		})
 }
 
 /**
  * Discord functionality
  */
- function begin() {
-	 console.log("Starting bot..")
 	 client.once('ready', () => {
 		 console.log("Ready as: "+client.user.username)
 		 console.log(`In ${client.guilds.array().length} guilds`)
@@ -80,19 +82,11 @@ function init() {
 			(msg.member.hasPermission("ADMINISTRATOR") ? blacklist.splice(blacklist.indexOf(msg.channel.id), 1) : msg.reply("you need admin for that."))
 		}
 	})
-}
 
-if (token != undefined) {
-		client.login(token).catch((err) => {
-			if (err.message.includes("token")) {
-				console.log("Invalid token provided..")
-				init()
+client.login(token).catch((err) => {
+			if (err.message.includes("token") || err.message.includes("login details")) {
+				setup()
 			} else {
 				console.log("Something beyond my comprehension has gone wrong.")
 			}
-		})
-		begin()
-} else {
-	console.log("Token not found")
-	init()
-}
+})
