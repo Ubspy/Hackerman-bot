@@ -16,13 +16,7 @@ const fs = require('fs')
 const readline = require('readline')
 const client = new Discord.Client()
 const hacker = require('./src/')
-// BUG: @method setup() writes to Bot.json, but if you cancel while it prompts for a token, it doesn't write anything to Bot.json, so this try statement exists to catch if Bot.json exists
-try {
-	var {prefix, token} = require("./config/Bot.json")
-} catch(err) {
-	setup()
-}
-// Blacklist array for Channel IDs to ignore
+var {token, prefix} = require('./config/Bot.json')
 var blacklist = []
 
 console.log("Hackerman-bot by ubspy & devr2k")
@@ -34,82 +28,95 @@ console.log("Hackerman-bot by ubspy & devr2k")
  * * see package.json
  */
 function setup() {
-		// Temporary Config Object
-		var conf = {
-			prefix:"",
-			token:""
-		}
-		// readline to prompt for token & prefix
-		let rl = readline.createInterface({
-			input: process.stdin,
-			output: process.stdout
-		})
-		// Asks user for a new token
-		rl.question("Token: ", (ans) => {
-			conf.token = ans
-			// Asks user for a prefix, if none then use none.
-			rl.question("Prefix: ", (ans2) => {
-				conf.prefix = ans2
-				rl.close()
-			})
-		})
-		rl.on('close', () => {
-			// Write to Bot.json to save the config.
-			fs.writeFile('./config/Bot.json', (JSON.stringify(conf)), 'utf8', () => {console.log("Saving..")})
-			// Attempt to login using provided token.
-			client.login(conf.token)
-		})
+    // Temporary Config Object
+    var conf = {
+        prefix: "",
+        token: ""
+    }
+    // readline to prompt for token & prefix
+    let rl = readline.createInterface({
+        input: process.stdin,
+        output: process.stdout
+    })
+    // Asks user for a new token
+    rl.question("Token: ", (ans) => {
+        conf.token = ans
+        // Asks user for a prefix, if none then use none.
+        rl.question("Prefix: ", (ans2) => {
+            conf.prefix = ans2
+            rl.close()
+        })
+    })
+    rl.on('close', () => {
+        // Write to Bot.json to save the config.
+        fs.writeFile('./config/Bot.json', (JSON.stringify(conf)), 'utf8', () => {
+            console.log("\nSaving..\n")
+        })
+        // Attempt to login using provided token.
+        init(conf.token, conf.prefix)
+    })
 }
 
 /**
  * Discord functionality
  */
-	// Once client is logged in it'll print who it is, and how many guilds it's in.
-	 client.once('ready', () => {
-		 console.log("Ready as: "+client.user.username)
-		 console.log(`In ${client.guilds.array().length} guilds`)
-	 })
-	client.on('message', (msg) => {
-		// Turn every msg to lowercase, because bot commands should not BE CASE SeNSITiVE
-		let content = msg.content.toLowerCase()
-		// Checks to see if the bot isn't talking to itself, and that the requested command isn't in a blacklisted channel
-		if (msg.author.id != client.user.id && !blacklist.includes(msg.channel.id)) {
-				switch (content) {
-					// Clear command, bulk deletes as much as it can.
-					case prefix+"clear":
-						(msg.guild.me.hasPermission("MANAGE_MESSAGES") ? msg.channel.fetchMessages().then((msgs) => {msg.channel.bulkDelete(msgs)}): msg.reply("I don't have perms for that!"))
-						break;
-					// Pushes the channel's ID that the command was called.
-					case prefix+"blacklist":
-						// It makes sure that the user that requested this has ADMIN perms to do so.
-						(msg.member.hasPermission("ADMINISTRATOR") ? blacklist.push(msg.channel.id):msg.reply("you need admin to do that."))
-						break;
-				}
-				// Listens for r/. Check src/index.js @method reddit more more info.
-				if (content.includes("r/")) {
-					msg.reply("OwO notices subreddit. Here's a link: "+hacker.reddit(content))
-				}
-				// SCP Look up using the prefix "scp" and any numbers provided after it. Example: `:scp 1048`
-				if (content.startsWith(prefix+"scp") && !content.includes("random")) {
-					let x = parseInt(msg.content.replace(/\D+/, ''));
-					(x < 4999 && x > 1 && x % 1 === 0 ? msg.reply("SCP Found: "+hacker.scp(x.toString())):msg.reply("SCP not found."))
-				}
-				// SCP Look up random. `:scp random` will return a random scp number between 1 and 4999.
-				if (content.startsWith(prefix+"scp") && content.includes("random")) {
-					msg.reply("SCP: "+hacker.scp((Math.floor(Math.random() * Math.floor(4999))).toString()))
-				}
-			}
-		// Unblacklist the channel that the command is called. User must have ADMIN perms to do so.
-		if (content == prefix+"unblacklist") {
-			(msg.member.hasPermission("ADMINISTRATOR") ? blacklist.splice(blacklist.indexOf(msg.channel.id), 1) : msg.reply("you need admin for that."))
-		}
-	})
+function init(token, prefix) {
+// Once client is logged in it'll print who it is, and how many guilds it's in.
+client.once('ready', () => {
+    console.log("Ready as: " + client.user.username)
+    console.log(`In ${client.guilds.array().length} guilds`)
+})
+client.on('message', (msg) => {
+    // Turn every msg to lowercase, because bot commands should not BE CASE SeNSITiVE
+    let content = msg.content.toLowerCase()
+    // Checks to see if the bot isn't talking to itself, and that the requested command isn't in a blacklisted channel
+    if (msg.author.id != client.user.id && !blacklist.includes(msg.channel.id)) {
+        switch (content) {
+            // Clear command, bulk deletes as much as it can.
+            case prefix + "clear":
+                (msg.guild.me.hasPermission("MANAGE_MESSAGES") ? msg.channel.fetchMessages().then((msgs) => {
+                    msg.channel.bulkDelete(msgs)
+                }) : msg.reply("I don't have perms for that!"))
+                break;
+                // Pushes the channel's ID that the command was called.
+            case prefix + "blacklist":
+                // It makes sure that the user that requested this has ADMIN perms to do so.
+                (msg.member.hasPermission("ADMINISTRATOR") ? blacklist.push(msg.channel.id) : msg.reply("you need admin to do that."))
+                break;
+        }
+        // Listens for r/. Check src/index.js @method reddit more more info.
+        if (content.includes("r/")) {
+            msg.reply("OwO notices subreddit. Here's a link: " + hacker.reddit(content))
+        }
+        // SCP Look up using the prefix "scp" and any numbers provided after it. Example: `:scp 1048`
+        if (content.startsWith(prefix + "scp") && !content.includes("random")) {
+            let x = parseInt(msg.content.replace(/\D+/, ''));
+            (x < 4999 && x > 1 && x % 1 === 0 ? msg.reply("SCP Found: " + hacker.scp(x.toString())) : msg.reply("SCP not found."))
+        }
+        // SCP Look up random. `:scp random` will return a random scp number between 1 and 4999.
+        if (content.startsWith(prefix + "scp") && content.includes("random")) {
+            msg.reply("SCP: " + hacker.scp((Math.floor(Math.random() * Math.floor(4999))).toString()))
+        }
+    }
+    // Unblacklist the channel that the command is called. User must have ADMIN perms to do so.
+    if (content == prefix + "unblacklist") {
+        (msg.member.hasPermission("ADMINISTRATOR") ? blacklist.splice(blacklist.indexOf(msg.channel.id), 1) : msg.reply("you need admin for that."))
+    }
+})
 // Attempts to login, if it doesn't work then run @method setup()
 client.login(token).catch((err) => {
-			if (err.message.includes("token") || err.message.includes("login details")) {
-				setup()
-			} else {
-				// I could sit through looking at all the possible errors, but I think this is a reasonable error log.
-				console.log("Something beyond my comprehension has gone wrong.")
-			}
+    if (err.message.includes("token") || err.message.includes("login details")) {
+	client.destroy()
+	console.log("Invalid token provided")
+        setup()
+    } else {
+        // I could sit through looking at all the possible errors, but I think this is a reasonable error log.
+        console.log("Something beyond my comprehension has gone wrong.")
+    }
 })
+}
+if (token.length != undefined && token.length > 1) {
+	init(token, prefix)
+} else {
+	setup()
+}
