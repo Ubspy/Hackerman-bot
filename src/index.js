@@ -36,7 +36,16 @@ module.exports = {
 	 */
 	scp:(scpid) => {
 		// Every two or one digit SCP's have zeros prefixed
-		let id = (!scpid.startsWith("0") || scpid.length < 3? ("00" + scpid).slice(-3) : scpid)
+		let id = (!scpid.startsWith("0") && scpid.length < 3 ?((sid)=>{
+			switch(sid.length) {
+				case 1:
+					return "00"+sid
+					break;
+				case 2:
+					return "0"+sid
+					break;
+			}
+		})(scpid) : scpid)
 		return "http://www.scp-wiki.net/scp-"+id
 	}
 }
