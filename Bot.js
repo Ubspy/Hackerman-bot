@@ -17,16 +17,18 @@ const readline = require('readline')
 const client = new Discord.Client()
 const hacker = require('./src/')
 try {
-var {prefix, token} = require("./config/Bot.json")
+	// If Bot.json is empty or not readable by JS then setup()
+	var {prefix, token} = require("./config/Bot.json")
 } catch(err) {
 	setup()
 }
+// Blacklist array for Channel IDs to ignore
 var blacklist = []
 
 /**
  * Initial Start
  */
- console.log("Hackerman-bot by ubspy & devr2k")
+console.log("Hackerman-bot by ubspy & devr2k")
 function setup() {
 		var conf = {
 			prefix:"",
