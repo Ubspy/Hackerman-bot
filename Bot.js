@@ -16,7 +16,17 @@ const fs = require('fs')
 const readline = require('readline')
 const client = new Discord.Client()
 const hacker = require('./src/')
+<<<<<<< HEAD
 var {token, prefix} = require('./config/Bot.json')
+=======
+// BUG: @method setup() writes to Bot.json, but if you cancel while it prompts for a token, it doesn't write anything to Bot.json, so this try statement exists to catch if JS can read Bot.json.
+try {
+	var {prefix, token} = require("./config/Bot.json")
+} catch(err) {
+	setup()
+}
+// Blacklist array for Channel IDs to ignore
+>>>>>>> 24bf5f7c5354dad5d0c485cce3c944228abbdb13
 var blacklist = []
 
 console.log("Hackerman-bot by ubspy & devr2k")
