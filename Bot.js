@@ -16,7 +16,7 @@ const fs = require('fs')
 const readline = require('readline')
 const client = new Discord.Client()
 const hacker = require('./src/')
-// BUG: @method setup() writes to Bot.json, but if you cancel while it prompts for a token, it doesn't write anything to Bot.json, so this try statement exists to catch if Bot.json exists
+// BUG: @method setup() writes to Bot.json, but if you cancel while it prompts for a token, it doesn't write anything to Bot.json, so this try statement exists to catch if JS can read Bot.json.
 try {
 	var {prefix, token} = require("./config/Bot.json")
 } catch(err) {
