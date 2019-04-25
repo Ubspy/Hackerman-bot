@@ -6,7 +6,7 @@
   If it doesn't (404, 301, etc.) it won't reply if this happens check the
   logger.
  *
- * @param {discord.js<Message>} msg [Message object to work with
+ * @param {discord.js <Message>} msg [Message object to work with]
    {@link} https://discord.js.org/#/docs/main/stable/class/Message
  */
 const https = require('https');
