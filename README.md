@@ -1,5 +1,8 @@
 # Hackerman bot
-This Discord bot has no particular functionality rather than fitting the needs of the author. Before starting the bot populate `/config/bot.js` with a token and prefix that the bot will use.
+This Discord bot has no particular functionality rather than fitting the needs of the author. Before starting the bot populate [`./config/bot-config.js`](./config/bot-config.js) with a token and prefix that the bot will use.
+
+## Starting
+`npm start` once [`/config/bot-config.js`](./config/bot-config.js) is populated.
 
 ## Current Functionality
 [`/src/commands/`](./src/commands/)
