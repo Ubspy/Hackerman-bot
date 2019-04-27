@@ -8,7 +8,8 @@
   },
   "devDependencies": {},
   "scripts": {
-    "test": "node Bot.js"
+    "start": "node start.js",
+    "postInstall": "npm start"
   },
   "repository": {
     "type": "git",
