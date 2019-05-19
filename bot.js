@@ -22,7 +22,7 @@ const reddit = require('./utils/reddit.js');
 const logger = log4js.getLogger();
 
 // Sets logging output file as well as in console
-// TODO: Make it runnable without console output
+// TODO: Make it runnable without console output (so on further look, this is really hard to do, this is a low priority TODO)
 log4js.configure({
     appenders: { fileLogging: { type: 'file', filename: './log/hackerman.log' }, debugLogging: { type: 'console' } },
     categories: { default: { appenders: ['fileLogging', 'debugLogging'], level: 'all' } }
@@ -58,9 +58,10 @@ client.on('message', message => {
             {
                 command.run(message, args);
             }
-            catch
+            catch(error)
             {
-
+                logger.error(error);
+                message.reply("There was a big oof, check the logs");
             }
         }
     }
@@ -68,6 +69,7 @@ client.on('message', message => {
     // Checks for subreddit message
     if(message.content.includes('r/'))
     {
+        // Links the subreddit
         reddit(message, logger);
     }
 });

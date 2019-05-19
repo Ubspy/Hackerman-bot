@@ -6,7 +6,9 @@
   "dependencies": {
     "discord.js": "^11.5.0",
     "fs": "0.0.1-security",
-    "log4js": "^4.2.0"
+    "log4js": "^4.2.0",
+    "request": "^2.88.0",
+    "snoowrap": "^1.15.2"
   },
   "devDependencies": {},
   "scripts": {
