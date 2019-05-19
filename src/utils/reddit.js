@@ -6,31 +6,36 @@
   If it doesn't (404, 301, etc.) it won't reply if this happens check the
   logger.
  *
- * @param {discord.js <Message>} ,essage [Message object to work with]
+ * @param {discord.js <Message>}, Message [Message object to work with]
    {@link} https://discord.js.org/#/docs/main/stable/class/Message
  */
 
 // Getting needed libraries
-const https = require("https");
+const request = require('request');
 
 // This returns a function with the passing parameters "message" and "logger"
-module.exports = message => {
-	// Gets the name of the subreddit by splitting the message between the r/ and the next space
-	let subreddit = message.content
-		.split("r/")[1]
-		.split(" ")[0]
-		.toLowerCase();
+module.exports = (message, logger) =>
+{
+    // Gets the name of the subreddit by splitting the message between the r/ and the next space
+    var subreddit = message.content.split("r/")[1].split(" ")[0].toLowerCase();
 
-	//log("Checking r/" + subreddit);
-
-	// Checks to make sure that the subreddit actually exists
-	https.get("https://www.reddit.com/r/" + subreddit, res => {
-		// Status code 200 means it loaded
-		if (res.statusCode == 200) {
-			message.reply("OwO, what's this? Subreddit link: https://reddit.com/r/" +subreddit);
-		} else {
-			// This runs if there's an error
-			console.log(`e`);
-		}
-	});
+    // After taking a look at the reddit json, there's a property called 'dist' that is 0 for subs that do not exist
+    // I have no idea what it means, but we'll use that to make sure it exists
+    request({
+        url:`https://www.reddit.com/r/${subreddit}.json`,
+        json: true
+    }, (error, response, body) => {
+        if(error)
+        {
+			// This happens if the page couldn't be reached
+            logger.error(`Something went horribly wrong when looking for subreddit ${subreddit}: ` + error);
+            message.channel.send("Something went horribly wrong, please check the log files");
+        }
+        else if(body.data.dist > 0)
+        {
+			// This only happens if it's a valid sub
+            logger.debug("Subreddit hyper-linked: " + subreddit);
+            message.channel.send("OwO, what's this? Subreddit link: https://reddit.com/r/" + subreddit);
+        }
+    });
 };

@@ -1,20 +1,32 @@
 const Discord = require("discord.js");
 const fs = require("fs");
 const config = require("../config/config.json");
+const log4js = require('log4js');
+const logger = log4js.getLogger();
 const client = new Discord.Client();
 var commands = new Map();
+
+// Sets logging output file as well as in console
+// TODO: Make it runnable without console output (so on further look, this is really hard to do, this is a low priority TODO)
+log4js.configure({
+    appenders: { fileLogging: { type: 'file', filename: './log/hackerman.log' }, debugLogging: { type: 'console' } },
+    categories: { default: { appenders: ['fileLogging', 'debugLogging'], level: 'all' } }
+});
 
 // readdirSync will return an array of each file in the commands folder
 // after that, they're filtered to only include files ending with .js
 fs.readdirSync(__dirname + "/commands")
 	.filter(file => file.endsWith(".js"))
-	.forEach(file => {
-		try {
-			let command = require(`./commands/${file}`);
-			console.log("Loaded command: " + file);
+	.forEach(file =>{
+		try
+		{
+			var command = require(`./commands/${file}`);
+			logger.info("Loaded command: " + file);
 			commands.set(command.name, command);
-		} catch (err) {
-			console.log(`Failed to load ${file}`, err);
+		}
+		catch (err)
+		{
+			logger.error(`Failed to load ${file}`, err);
 		}
 	});
 
@@ -26,39 +38,47 @@ client.on("message", message => {
 	// Exits the function is the message is from a bot, this avoids infinite loops
 	if (message.author.bot) return;
 
-	// Sees if the sent message starts with the command prefix
-	if (message.content.startsWith(config.prefix)) {
+	// Sees if the sent message starts with the command prefix, and if it's in a channel called 'bot-commands'
+	if (message.content.startsWith(config.prefix) && message.channel.name == 'bot-commands')
+	{
 		// Gets arguments from message by space seperation
-		let args = message.content
+		var args = message.content
 			.slice(config.prefix.length)
 			.split(" ");
 
 		// Removes the first element from the args array and sets it to this variable, also sets it to lowercase
-		let commandName = args.shift().toLowerCase();
+		var commandName = args.shift().toLowerCase();
 
 		// If our command list has a command with the typed name, it tries it
-		if (commands.has(commandName)) {
+		if (commands.has(commandName))
+		{
 			// Gets the actual command
 			var command = commands.get(commandName);
 
 			// Tries to run the command
-			try {
+			try
+			{
 				command.run(message, args);
-			} catch(err) {
-				console.log(`Failed to load "${commandName}"`, err);
+			}
+			catch(err)
+			{
+				logger.error(error);
+                message.reply("There was a big oof in running that command, check the logs");
 			}
 		}
 	}
 
 	// Checks for subreddit message
-	if (message.content.includes("r/")) {
-		reddit(message);
+	if (message.content.includes("r/"))
+	{
+		reddit(message, logger);
 	}
 });
 
 client.login(config.token)
 	.then(() => {
 		// Outputs debug for when the bot has connected
-		console.log("Connected as " + client.user.username);
-	})
-	.catch(console.log);
+		logger.info("Connected as " + client.user.username);
+	}).catch(error => {
+		logger.fatal(error);
+	});
