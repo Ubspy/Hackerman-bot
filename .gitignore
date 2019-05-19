@@ -1,6 +1,9 @@
 # Token
 config.json
 
+# Package-lock
+package-lock.json
+
 # Logs
 logs
 *.log
