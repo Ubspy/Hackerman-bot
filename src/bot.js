@@ -26,7 +26,7 @@ fs.readdirSync(__dirname + "/commands")
 		}
 		catch (err)
 		{
-			logger.error(`Failed to load ${file}`, err);
+			logger.error(`Failed to load ${file}`);
 		}
 	});
 
