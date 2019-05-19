@@ -1,9 +1,18 @@
-const Discord = require('discord.js');
 const fs = require('fs')
 const log4js = require('log4js');
 
-const config = require('./config.json');
 
+// Starts logger
+const logger = log4js.getLogger();
+
+// Sets logging output file as well as in console
+// TODO: Make it runnable without console output (so on further look, this is really hard to do, this is a low priority TODO)
+log4js.configure({
+    appenders: { fileLogging: { type: 'file', filename: './log/hackerman.log' }, debugLogging: { type: 'console' } },
+    categories: { default: { appenders: ['fileLogging', 'debugLogging'], level: 'all' } }
+});
+
+const Discord = require('discord.js');
 const client = new Discord.Client();
 client.commands = new Discord.Collection(); // New collection to eventually hold all our commands
 
@@ -18,15 +27,8 @@ const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('
 // The utils won't be loaded like that because there's no good way to identify them, they also won't be as many
 const reddit = require('./utils/reddit.js');
 
-// Starts logger
-const logger = log4js.getLogger();
-
-// Sets logging output file as well as in console
-// TODO: Make it runnable without console output (so on further look, this is really hard to do, this is a low priority TODO)
-log4js.configure({
-    appenders: { fileLogging: { type: 'file', filename: './log/hackerman.log' }, debugLogging: { type: 'console' } },
-    categories: { default: { appenders: ['fileLogging', 'debugLogging'], level: 'all' } }
-});
+// Bot config file
+const config = require('./config.json');
 
 // Outputs debug for when the bot has connected
 client.on('ready', () => {
