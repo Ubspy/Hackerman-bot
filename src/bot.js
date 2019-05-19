@@ -17,7 +17,7 @@ log4js.configure({
 // after that, they're filtered to only include files ending with .js
 fs.readdirSync(__dirname + "/commands")
 	.filter(file => file.endsWith(".js"))
-	.forEach(file =>{
+	.forEach(file => {
 		try
 		{
 			var command = require(`./commands/${file}`);
