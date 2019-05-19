@@ -4,11 +4,13 @@
   "description": "General Use Discord Bot",
   "main": "Bot.js",
   "dependencies": {
-    "discord.js": "^11.5.0"
+    "discord.js": "^11.5.0",
+    "fs": "0.0.1-security",
+    "log4js": "^4.2.0"
   },
   "devDependencies": {},
   "scripts": {
-    "start": "node start.js",
+    "start": "node bot.js",
     "postInstall": "npm start"
   },
   "repository": {
