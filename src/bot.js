@@ -6,7 +6,7 @@ var commands = new Map();
 
 // readdirSync will return an array of each file in the commands folder
 // after that, they're filtered to only include files ending with .js
-fs.readdirSync("./commands")
+fs.readdirSync(__dirname + "/commands")
 	.filter(file => file.endsWith(".js"))
 	.forEach(file => {
 		try {
