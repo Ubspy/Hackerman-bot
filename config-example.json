@@ -1,0 +1,5 @@
+{
+    "token" : "<your api token here>",
+    "clientId" : "<your id here>",
+    "prefix" : "!"
+}
