@@ -1,13 +1,15 @@
 /**
  * @file reddit.js
- * @author Ubspy, dylhack
+ * @author Ubspy
  * @desc
   Whenever 'r/' is detected in a message it will check if a subreddit exists.
-  If it doesn't (404, 301, etc.) it won't reply if this happens check the
+  If it doesn't, it won't reply if this happens check the
   logger.
  *
- * @param {discord.js <Message>} ,essage [Message object to work with]
+ * @param {discord.js <Message>}, Message [Message object to work with]
    {@link} https://discord.js.org/#/docs/main/stable/class/Message
+ * @param {log4js <Logger>}, Logger to output logging to file
+   {@link} https://www.npmjs.com/package/log4js
  */
 
  // Getting needed libraries
