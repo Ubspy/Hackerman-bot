@@ -1,7 +1,7 @@
 {
   "name": "hackerman-bot",
-  "version": "2.0.0",
-  "description": "ultimate hackerman bot",
+  "version": "1.0.0",
+  "description": "General Use Discord Bot",
   "main": "Bot.js",
   "dependencies": {
     "discord.js": "^11.5.0",
