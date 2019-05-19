@@ -20,7 +20,13 @@ const reddit = require('./utils/reddit.js');
 
 // Starts logger
 const logger = log4js.getLogger();
-logger.level = 'debug';
+
+// Sets logging output file as well as in console
+// TODO: Make it runnable without console output
+log4js.configure({
+    appenders: { fileLogging: { type: 'file', filename: './log/hackerman.log' }, debugLogging: { type: 'console' } },
+    categories: { default: { appenders: ['fileLogging', 'debugLogging'], level: 'all' } }
+});
 
 // Outputs debug for when the bot has connected
 client.on('ready', () => {

@@ -27,7 +27,6 @@ module.exports = (message, logger) =>
         //TODO: This doesn't work to check if the subreddit exists
 
         // Status code 200 means it loaded
-        logger.debug("status code: " + res.statusCode);
         if (res.statusCode == 200)
         {
             logger.debug("Subreddit hyper-linked: " + subreddit);
@@ -36,7 +35,7 @@ module.exports = (message, logger) =>
         // This runs if there's an error
         else
         {
-            logger.debug(`(${res.statusCode}) ` + subreddit);
+            logger.error(`(${res.statusCode}) ` + subreddit);
         }
     })
 };
