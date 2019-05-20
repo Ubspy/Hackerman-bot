@@ -17,14 +17,18 @@ const request = require('request');
 module.exports = (message, logger) =>
 {
     // Gets the name of the subreddit by splitting the message between the r/ and the next space
-    var subreddit = message.content.toLowerCase().split("r/")[1].split(" ")[0].toLowerCase();
+    var subreddit = message.content.split("r/")[1].
+        split(" ")[0]
+        .toLowerCase();
 
     // After taking a look at the reddit json, there's a property called 'dist' that is 0 for subs that do not exist
     // I have no idea what it means, but we'll use that to make sure it exists
-    request({
+    request(
+    {
         url:`https://www.reddit.com/r/${subreddit}.json`,
         json: true
-    }, (error, response, body) => {
+    },
+    (error, response, body) => {
         if(error)
         {
 			// This happens if the page couldn't be reached
@@ -34,7 +38,7 @@ module.exports = (message, logger) =>
         else if(body.data.dist && body.data.dist > 0)
         {
 			// This only happens if it's a valid sub
-            logger.debug("Subreddit hyper-linked: " + subreddit);
+            logger.info("Subreddit hyper-linked: " + subreddit);
             message.channel.send("OwO, what's this? I see a subreddit: https://reddit.com/r/" + subreddit);
         }
 

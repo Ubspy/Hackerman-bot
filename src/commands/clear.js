@@ -1,4 +1,4 @@
-const sleep = require('sleep');
+//const sleep = require('sleep');
 
 // This will clear all the messages in the bot channel
 exports.name = "clear";
@@ -12,14 +12,15 @@ exports.run = (message, logger) => {
         logger.info("Command channel has been cleared")
     }).catch(error => {
         // If something goes wrong, log it
-        logger.error(error);
+        logger.error(`Failed to clear chat:\n${error}`);
     });
 
     //Sends a message
-    message.channel.send("Chat log has been cleared!").then(function(thisMessage)
+    message.channel.send("Chat log has been cleared!").then(thisMessage =>
     {
         //After the message it sent, it waits three seconds and deletes itself
-        sleep.sleep(3);
-        thisMessage.delete();
+        setTimeout(() =>{
+            thisMessage.delete();
+        }, 3000);
     });
 };

@@ -1,6 +1,6 @@
 const Discord = require("discord.js");
 const fs = require("fs");
-const config = require("../config/config.json");
+const config = require("../config/config.json"); // You'll need to change the example config into an actual one if you fork or clone the repo
 const log4js = require('log4js');
 const logger = log4js.getLogger();
 const client = new Discord.Client();
@@ -9,8 +9,22 @@ var commands = new Map();
 // Sets logging output file as well as in console
 // TODO: Make it runnable without console output (so on further look, this is really hard to do, this is a low priority TODO)
 log4js.configure({
-    appenders: { fileLogging: { type: 'file', filename: './log/hackerman.log', maxLogSize: 2048 }, debugLogging: { type: 'console' } },
-    categories: { default: { appenders: ['fileLogging', 'debugLogging'], level: 'all' } }
+    appenders: {
+		fileLogging: {
+			type: 'file',
+			filename: './log/hackerman.log',
+			maxLogSize: 2048
+		},
+		debugLogging: {
+			type: 'console'
+		}
+	},
+    categories: {
+		default: {
+			appenders: ['fileLogging', 'debugLogging'],
+			level: 'all'
+		}
+	}
 });
 
 // readdirSync will return an array of each file in the commands folder
@@ -24,9 +38,9 @@ fs.readdirSync(__dirname + "/commands")
 			logger.info("Loaded command: " + file);
 			commands.set(command.name, command);
 		}
-		catch (err)
+		catch (error)
 		{
-			logger.error(`Failed to load ${file}`);
+			logger.error(`Failed to load ${file}:\n${error}`);
 		}
 	});
 
@@ -60,9 +74,9 @@ client.on("message", message => {
 			{
 				command.run(message, logger);
 			}
-			catch(err)
+			catch(error)
 			{
-				logger.error(error);
+				logger.error(`Failed to run ${commandName}:\n${error}`);
                 message.reply("There was a big oof in running that command, check the logs");
 			}
 		}
@@ -80,5 +94,5 @@ client.login(config.token)
 		// Outputs debug for when the bot has connected
 		logger.info("Connected as " + client.user.username);
 	}).catch(error => {
-		logger.fatal(error);
+		logger.fatal(`Failed to login:\n${error}`);
 	});
