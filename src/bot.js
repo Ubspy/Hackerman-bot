@@ -9,7 +9,7 @@ var commands = new Map();
 // Sets logging output file as well as in console
 // TODO: Make it runnable without console output (so on further look, this is really hard to do, this is a low priority TODO)
 log4js.configure({
-    appenders: { fileLogging: { type: 'file', filename: './log/hackerman.log' }, debugLogging: { type: 'console' } },
+    appenders: { fileLogging: { type: 'file', filename: './log/hackerman.log', maxLogSize: 2048 }, debugLogging: { type: 'console' } },
     categories: { default: { appenders: ['fileLogging', 'debugLogging'], level: 'all' } }
 });
 
@@ -58,7 +58,7 @@ client.on("message", message => {
 			// Tries to run the command
 			try
 			{
-				command.run(message, args);
+				command.run(message, logger);
 			}
 			catch(err)
 			{
@@ -68,8 +68,8 @@ client.on("message", message => {
 		}
 	}
 
-	// Checks for subreddit message
-	if (message.content.includes("r/"))
+	// Checks for subreddit message 
+	if (message.content.toLowerCase().includes("r/"))
 	{
 		reddit(message, logger);
 	}
