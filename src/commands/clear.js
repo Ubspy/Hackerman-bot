@@ -1,8 +1,9 @@
 // This will clear all the messages in the bot channel
 exports.name = "clear";
-exports.desc = "Clears the bot-commands channel for convenience"
+exports.desc = "Clears the bot-commands channel for convenience";
+exports.args = [];
 
-exports.run = (message, logger) => {
+exports.run = (message, args, logger) => {
     //Gets all messages in the bot-commands channel
     message.channel.fetchMessages({limit:100}).then(toDelete => {
         // Calls recursive function

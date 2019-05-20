@@ -2,7 +2,6 @@ const Discord = require("discord.js");
 const fs = require("fs");
 const config = require("../config/config.json"); // You'll need to change the example config into an actual one if you fork or clone the repo
 const log4js = require('log4js');
-const logger = log4js.getLogger();
 const client = new Discord.Client();
 var commands = new Map();
 
@@ -26,6 +25,8 @@ log4js.configure({
 		}
 	}
 });
+
+const logger = log4js.getLogger();
 
 // readdirSync will return an array of each file in the commands folder
 // after that, they're filtered to only include files ending with .js
@@ -63,8 +64,13 @@ client.on("message", message => {
 		// Removes the first element from the args array and sets it to this variable, also sets it to lowercase
 		var commandName = args.shift().toLowerCase();
 
-		// If our command list has a command with the typed name, it tries it
-		if (commands.has(commandName))
+		// So yes this defeats the purpose of the dynamic commands, but the help command needs different arguments so I have to add it statically
+		if(commandName == "help")
+		{
+			// Runs the help command
+			commands.get("help").run(message, commands, logger);
+		}
+		else if (commands.has(commandName)) // If our command list has a command with the typed name, it tries it
 		{
 			// Gets the actual command
 			var command = commands.get(commandName);
@@ -72,7 +78,7 @@ client.on("message", message => {
 			// Tries to run the command
 			try
 			{
-				command.run(message, logger);
+				command.run(message, args, logger);
 			}
 			catch(error)
 			{
