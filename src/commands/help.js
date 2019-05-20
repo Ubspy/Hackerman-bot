@@ -1,6 +1,7 @@
 //TODO: Javadoc comments
 exports.name = "help";
 exports.desc = "Lists avalible commands with their usage";
+exports.args = [];
 
 exports.run = (message, commands, logger) => {
     // Starts out with this for the discord formatting
@@ -8,8 +9,19 @@ exports.run = (message, commands, logger) => {
 
     commands.forEach(command =>
     {
-        //TODO: Add args
-        helpString += `${command.name}: ${command.desc}\n`
+        // Adds command name
+        helpString += `${command.name}`
+
+        // Adds arguments if there are any
+        if(command.args.length > 0)
+        {
+            command.args.forEach(arg => {
+                helpString += ` <${arg}>`;
+            });
+        }
+
+        // Finishes off command with its description
+        helpString += `: ${command.desc}\n`;
     });
 
     // Ends discord formatting

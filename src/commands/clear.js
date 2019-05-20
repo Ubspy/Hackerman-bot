@@ -2,7 +2,8 @@
 
 // This will clear all the messages in the bot channel
 exports.name = "clear";
-exports.desc = "Clears the bot-commands channel for convenience"
+exports.desc = "Clears the bot-commands channel for convenience";
+exports.args = [];
 
 exports.run = (message, args, logger) => {
     //Gets all messages in the bot-commands channel
@@ -10,7 +11,7 @@ exports.run = (message, args, logger) => {
     {
         //Bulk deletes all the messages
         message.channel.bulkDelete(messages);
-        logger.info("Command channel has been cleared")
+        logger.info("Command channel has been cleared"); // Logs it, lmao
     }).catch(error => {
         // If something goes wrong, log it
         logger.error(`Failed to clear chat:\n${error}`);
