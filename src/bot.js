@@ -63,8 +63,13 @@ client.on("message", message => {
 		// Removes the first element from the args array and sets it to this variable, also sets it to lowercase
 		var commandName = args.shift().toLowerCase();
 
-		// If our command list has a command with the typed name, it tries it
-		if (commands.has(commandName))
+		// So yes this defeats the purpose of the dynamic commands, but the help command needs different arguments so I have to add it statically
+		if(commandName == "help")
+		{
+			// Runs the help command
+			commands.get("help").run(message, commands, logger);
+		}
+		else if (commands.has(commandName)) // If our command list has a command with the typed name, it tries it
 		{
 			// Gets the actual command
 			var command = commands.get(commandName);
@@ -72,7 +77,7 @@ client.on("message", message => {
 			// Tries to run the command
 			try
 			{
-				command.run(message, logger);
+				command.run(message, args, logger);
 			}
 			catch(error)
 			{

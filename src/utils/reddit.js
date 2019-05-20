@@ -11,7 +11,7 @@
  */
 
 // Getting needed libraries
-const request = require('request');
+const request = require("request");
 
 // This returns a function with the passing parameters "message" and "logger"
 module.exports = (message, logger) =>

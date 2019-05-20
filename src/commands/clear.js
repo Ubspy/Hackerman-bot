@@ -2,6 +2,7 @@
 
 // This will clear all the messages in the bot channel
 exports.name = "clear";
+exports.desc = "Clears the bot-commands channel for convenience"
 
 exports.run = (message, logger) => {
     //Gets all messages in the bot-commands channel
