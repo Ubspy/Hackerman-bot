@@ -4,7 +4,7 @@
 exports.name = "clear";
 exports.desc = "Clears the bot-commands channel for convenience"
 
-exports.run = (message, logger) => {
+exports.run = (message, args, logger) => {
     //Gets all messages in the bot-commands channel
     message.channel.fetchMessages().then(messages =>
     {

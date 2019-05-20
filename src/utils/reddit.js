@@ -35,6 +35,8 @@ module.exports = (message, logger) =>
             logger.error(`Something went horribly wrong when looking for subreddit ${subreddit}: ` + error);
             message.channel.send("Something went horribly wrong, please check the log files");
         }
+        // This prevents the bot from crashing if it's a 404 because for some reason some subreddits return 404 and some don't
+        else if(response.statusCode != 200) return;
         else if(body.data.dist && body.data.dist > 0)
         {
 			// This only happens if it's a valid sub
