@@ -11,7 +11,7 @@ log4js.configure({
     appenders: {
 		fileLogging: {
 			type: 'file',
-			filename: './log/hackerman.log',
+			filename: './logs/hackerman.log',
 			maxLogSize: 2048
 		},
 		debugLogging: {
