@@ -67,8 +67,17 @@ client.on("message", message => {
 		// So yes this defeats the purpose of the dynamic commands, but the help command needs different arguments so I have to add it statically
 		if(commandName == "help")
 		{
-			// Runs the help command
-			commands.get("help").run(message, commands, logger);
+			// Tries to run the help command
+			try
+			{
+				commands.get("help").run(message, commands, logger);
+			}
+			catch(error)
+			{
+				logger.fatal(`Failed to exexcute help command:\n${error}`);
+				message.reply(`There was a big oof in running help, check the logs`);
+
+			}
 		}
 		else if (commands.has(commandName)) // If our command list has a command with the typed name, it tries it
 		{
@@ -82,16 +91,24 @@ client.on("message", message => {
 			}
 			catch(error)
 			{
-				logger.error(`Failed to run ${commandName}:\n${error}`);
-                message.reply("There was a big oof in running that command, check the logs");
+				logger.fatal(`Failed to run ${commandName}:\n${error}`);
+                message.reply(`There was a big oof in running ${commandName}, check the logs`);
 			}
 		}
 	}
 
-	// Checks for subreddit message 
-	if (message.content.toLowerCase().includes("r/"))
+	// Checks for subreddit message (won't link the subreddit if there's already a link)
+	if (message.content.toLowerCase().includes("r/") && !message.content.toLowerCase().includes("https://"))
 	{
-		reddit(message, logger);
+		// Try catch because it will crash the bot if it fails
+		try
+		{
+			reddit(message, logger);
+		}
+		catch(error)
+		{
+			logger.fatal(`Failed to link subreddit from message ${message.content}:\n${error}`);
+		}
 	}
 });
 
