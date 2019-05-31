@@ -11,7 +11,7 @@ log4js.configure({
     appenders: {
 		fileLogging: {
 			type: 'file',
-			filename: './log/hackerman.log',
+			filename: './logs/hackerman.log',
 			maxLogSize: 2048
 		},
 		debugLogging: {
@@ -65,12 +65,7 @@ client.on("message", message => {
 		var commandName = args.shift().toLowerCase();
 
 		// So yes this defeats the purpose of the dynamic commands, but the help command needs different arguments so I have to add it statically
-		if(commandName == "help")
-		{
-			// Runs the help command
-			commands.get("help").run(message, commands, logger);
-		}
-		else if (commands.has(commandName)) // If our command list has a command with the typed name, it tries it
+		if(commands.has(commandName)) // If our command list has a command with the typed name, it tries it
 		{
 			// Gets the actual command
 			var command = commands.get(commandName);
@@ -82,16 +77,24 @@ client.on("message", message => {
 			}
 			catch(error)
 			{
-				logger.error(`Failed to run ${commandName}:\n${error}`);
-                message.reply("There was a big oof in running that command, check the logs");
+				logger.fatal(`Failed to run ${commandName}:\n${error}`);
+				message.reply(`There was a big oof in running ${commandName}, check the logs`);
 			}
 		}
 	}
 
-	// Checks for subreddit message 
-	if (message.content.toLowerCase().includes("r/"))
+	// Checks for subreddit message (won't link the subreddit if there's already a link)
+	if (message.content.toLowerCase().includes("r/") && !message.content.toLowerCase().includes("https://"))
 	{
-		reddit(message, logger);
+		// Try catch because it will crash the bot if it fails
+		try
+		{
+			reddit(message, logger);
+		}
+		catch(error)
+		{
+			logger.fatal(`Failed to link subreddit from message ${message.content}:\n${error}`);
+		}
 	}
 });
 
