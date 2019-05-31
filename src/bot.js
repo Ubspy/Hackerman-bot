@@ -35,8 +35,11 @@ fs.readdirSync(__dirname + "/commands")
 	.forEach(file => {
 		try
 		{
-			var command = require(`./commands/${file}`);
+			// Loads the file from the dir
+			var command = require(`${__dirname}/commands/${file}`);
 			logger.info("Loaded command: " + file);
+
+			// Adds it to the hashmap with the key of the command name, and the value of the command
 			commands.set(command.name, command);
 		}
 		catch (error)
@@ -64,8 +67,8 @@ client.on("message", message => {
 		// Removes the first element from the args array and sets it to this variable, also sets it to lowercase
 		var commandName = args.shift().toLowerCase();
 
-		// So yes this defeats the purpose of the dynamic commands, but the help command needs different arguments so I have to add it statically
-		if(commands.has(commandName)) // If our command list has a command with the typed name, it tries it
+		// If our command list has a command with the typed name, it tries it
+		if(commands.has(commandName))
 		{
 			// Gets the actual command
 			var command = commands.get(commandName);
