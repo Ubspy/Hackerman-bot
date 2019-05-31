@@ -65,21 +65,7 @@ client.on("message", message => {
 		var commandName = args.shift().toLowerCase();
 
 		// So yes this defeats the purpose of the dynamic commands, but the help command needs different arguments so I have to add it statically
-		if(commandName == "help")
-		{
-			// Tries to run the help command
-			try
-			{
-				commands.get("help").run(message, commands, logger);
-			}
-			catch(error)
-			{
-				logger.fatal(`Failed to exexcute help command:\n${error}`);
-				message.reply(`There was a big oof in running help, check the logs`);
-
-			}
-		}
-		else if (commands.has(commandName)) // If our command list has a command with the typed name, it tries it
+		if(commands.has(commandName)) // If our command list has a command with the typed name, it tries it
 		{
 			// Gets the actual command
 			var command = commands.get(commandName);
@@ -92,7 +78,7 @@ client.on("message", message => {
 			catch(error)
 			{
 				logger.fatal(`Failed to run ${commandName}:\n${error}`);
-                message.reply(`There was a big oof in running ${commandName}, check the logs`);
+				message.reply(`There was a big oof in running ${commandName}, check the logs`);
 			}
 		}
 	}
