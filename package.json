@@ -5,6 +5,7 @@
   "main": "Bot.js",
   "dependencies": {
     "discord.js": "^11.5.0",
+    "googleapis": "^40.0.0",
     "log4js": "^4.2.0",
     "request": "^2.88.0"
   },

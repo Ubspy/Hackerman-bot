@@ -42,7 +42,7 @@ exports.run = (message, args, logger) => {
         if(steamCommands.has(commandName))
         {
             // Gets the actual command
-            var command = commands.get(commandName);
+            var command = steamCommands.get(commandName);
 
             // Tries to run the command
             try
