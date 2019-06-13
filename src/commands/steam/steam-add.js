@@ -2,7 +2,7 @@ const fs = require('fs');
 const {google} = require('googleapis');
 const search = google.customsearch('v1');
 const config = require('../../../config/config.json'); // Goes 3 folders back to get config file
-const wishlist = require('./wishlist.json');
+const wishlist = require('../../../config/wishlist.json');
 
 const SteamAPI = require('steamapi');
 const steam = new SteamAPI(config.steamToken);
@@ -39,7 +39,9 @@ exports.run = async (message, args, logger) => {
     // Gets the steam id by splitting it with / and takes the last element of the steam url, which is the id
     // The epic thing is every single steam url is different so you have do some oddball shit just to get the ID
     // The app ID is (hopefully) always after 'app/' so we look for that and get the ID afterwards
-    var gameID = link.split('/')[link.split('/').indexOf('app') + 1];
+    // Seriously, valve please use consistent fucking urls
+    var urlAppStr = link.split('/').find(element => element.includes("app"));
+    var gameID = link.split('/')[link.split('/').indexOf(urlAppStr) + 1];
 
     // Checks to see if the wishlist already contains the game
     if(!wishlist.games.some(game => game.id === gameID))
@@ -52,8 +54,8 @@ exports.run = async (message, args, logger) => {
             var gameOnSale = (details.price_overview.discount_percent > 0);
 
             // Adds game to wishlist object, then writes it to the file
-            wishlist.games.push({"name" : gameName, "id" : gameID, "onSale" : gameOnSale});
-            fs.writeFileSync(`${__dirname}/wishlist.json`, JSON.stringify(wishlist));
+            wishlist.games.push({"name" : gameName, "id" : gameID, "link" : link, "onSale" : gameOnSale});
+            fs.writeFileSync(`${__dirname}/../../../config/wishlist.json`, JSON.stringify(wishlist));
         });
         
         logger.info(`Removed game ${gameName} with id ${gameID} from wishlist`);

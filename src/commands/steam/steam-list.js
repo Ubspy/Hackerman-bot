@@ -1,4 +1,4 @@
-const wishlist = require('./wishlist.json');
+const wishlist = require('../../../config/wishlist.json');
 
 exports.name = "list";
 exports.desc = "Lists all games currently in the wishlist";

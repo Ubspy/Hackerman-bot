@@ -2,7 +2,7 @@ const fs = require('fs');
 const {google} = require('googleapis');
 const search = google.customsearch('v1');
 const config = require('../../../config/config.json'); // Goes 3 folders back to get config file
-const wishlist = require('./wishlist.json');
+const wishlist = require('../../../config/wishlist.json');
 
 exports.name = "remove";
 exports.desc = "Removes a steam game to the wishlist of games";
@@ -46,7 +46,7 @@ exports.run = async (message, args, logger) => {
         
         // Removes game from wishlist object, then writes it to the file
         wishlist.games.pop({"name" : gameName, "id" : gameID});
-        fs.writeFileSync(`${__dirname}/wishlist.json`, JSON.stringify(wishlist));
+        fs.writeFileSync(`${__dirname}/../../../config/wishlist.json`, JSON.stringify(wishlist));
 
         logger.info(`Added game ${gameName} with id ${gameID} to wishlist`);
     }
