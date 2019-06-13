@@ -45,7 +45,7 @@ exports.run = async (message, args, logger) => {
         message.reply(`Removed ${gameName} to wishlish\n${link}`);
         
         // Removes game from wishlist object, then writes it to the file
-        wishlist.games.pop({"name" : gameName, "id" : gameID, "onSale" : false});
+        wishlist.games.pop({"name" : gameName, "id" : gameID});
         fs.writeFileSync(`${__dirname}/wishlist.json`, JSON.stringify(wishlist));
 
         logger.info(`Added game ${gameName} with id ${gameID} to wishlist`);

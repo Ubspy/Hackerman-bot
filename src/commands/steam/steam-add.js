@@ -4,6 +4,9 @@ const search = google.customsearch('v1');
 const config = require('../../../config/config.json'); // Goes 3 folders back to get config file
 const wishlist = require('./wishlist.json');
 
+const SteamAPI = require('steamapi');
+const steam = new SteamAPI(config.steamToken);
+
 exports.name = "add";
 exports.desc = "Add a steam game to the wishlist of games";
 exports.args = ["game name"];
@@ -43,13 +46,17 @@ exports.run = async (message, args, logger) => {
     {
         // Notifies the user that the game was added
         message.reply(`Added ${gameName} to wishlish\n${link}`);
+
+        // Gets the game details from steam
+        steam.getGameDetails(gameID).then(details => {
+            var gameOnSale = (details.price_overview.discount_percent > 0);
+
+            // Adds game to wishlist object, then writes it to the file
+            wishlist.games.push({"name" : gameName, "id" : gameID, "onSale" : gameOnSale});
+            fs.writeFileSync(`${__dirname}/wishlist.json`, JSON.stringify(wishlist));
+        });
         
-        // Adds game to wishlist object, then writes it to the file
-        wishlist.games.push({"name" : gameName, "id" : gameID, "onSale" : false});
-        fs.writeFileSync(`${__dirname}/wishlist.json`, JSON.stringify(wishlist));
-
         logger.info(`Removed game ${gameName} with id ${gameID} from wishlist`);
-
     }
     else
     {
