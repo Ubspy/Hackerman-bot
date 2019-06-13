@@ -9,8 +9,7 @@ exports.desc = "Removes a steam game to the wishlist of games";
 exports.args = ["game name"];
 
 // This has to be an 
-exports.run = async (message, args, logger) =>
-{
+exports.run = async (message, args, logger) => {
     // Since this only takes one argument, and the name of some games have spaces, we're gonna join all the elements together from the args array
     var gameName = args.join(' ');
 
@@ -46,11 +45,13 @@ exports.run = async (message, args, logger) =>
         message.reply(`Removed ${gameName} to wishlish\n${link}`);
         
         // Removes game from wishlist object, then writes it to the file
-        wishlist.games.pop({"id" : gameID, "onSale" : false});
+        wishlist.games.pop({"name" : gameName, "id" : gameID, "onSale" : false});
         fs.writeFileSync(`${__dirname}/wishlist.json`, JSON.stringify(wishlist));
+        
+        logger.info(`Added game ${gameName} with id ${gameId} to wishlist`);
     }
     else
     {
         message.reply(`${gameName} is not on the wishlist\n${link}`);
     }
-}
+};
