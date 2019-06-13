@@ -17,15 +17,17 @@ module.exports = (announcementChannel, logger) => {
                     // Announces it in the announcement channel
                     announcementChannel.send(`${game.name} is ${details.price_overview.discount_percent}% off!. It's on sale from ${details.price_overview.initial} to ${details.price_overview.final}\n${game.link}`);
 
-                    // Changes game's sale state to true
+                    // Changes game's sale state to true and writes to the file
                     game.onSale = true;
+                    fs.writeFileSync(`${__dirname}/../../config/wishlist.json`, JSON.stringify(wishlist));
 
                     logger.info(`Notified users that ${game.name} is on sale`);
                 }
                 else if(details.price_overview.discount_percent == 0 && game.onSale)
                 {
-                    // Changes game's sale state to false
+                    // Changes game's sale state to false and writes to the file
                     game.onSale = false;
+                    fs.writeFileSync(`${__dirname}/../../config/wishlist.json`, JSON.stringify(wishlist));
 
                     logger.info(`${game.name} is no longer on sale`);
                 }
