@@ -7,6 +7,13 @@ exports.args = [];
 exports.run = (message, args, logger) => {
     var gamesString = '```\n';
 
+    // Sorts wishlist alphabetically
+    wishlist.games.sort((a, b) => {
+        if(a.name < b.name) { return -1; }
+        else if(a.name > b.name) { return 1; }
+        else { return 0; }
+    });
+
     // Goes through and adds all the games
     wishlist.games.forEach(game => {
         gamesString += `${game.name}: ${game.onSale}\n`;
