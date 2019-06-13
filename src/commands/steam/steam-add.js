@@ -48,7 +48,7 @@ exports.run = async (message, args, logger) => {
         wishlist.games.push({"name" : gameName, "id" : gameID, "onSale" : false});
         fs.writeFileSync(`${__dirname}/wishlist.json`, JSON.stringify(wishlist));
 
-        logger.info(`Removed game ${gameName} with id ${gameId} from wishlist`);
+        logger.info(`Removed game ${gameName} with id ${gameID} from wishlist`);
 
     }
     else

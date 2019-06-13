@@ -58,11 +58,11 @@ exports.run = (message, args, logger) => {
         else
         {
             // If the subcommand given doesn't exist
-            message.reply(`${commandName} is not a valid steam subcommand`);
+            message.reply(`${commandName} is not a valid steam subcommand, try \`!steam help\``);
         }
     }
     else // If no argument is provided
     {
-        message.reply("You need to specify a subcommand");
+        message.reply("You need to specify a subcommand, try \`!steam help\`");
     }
 };
