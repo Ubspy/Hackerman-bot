@@ -98,7 +98,7 @@ client.on("message", message => {
 	}
 });
 
-client.login(config.token)
+client.login(config.discordToken)
 	.then(() => {
 		// Outputs debug for when the bot has connected
 		logger.info("Connected as " + client.user.username);
