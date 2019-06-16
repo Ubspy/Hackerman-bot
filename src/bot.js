@@ -100,6 +100,12 @@ client.on("message", message => {
 			logger.fatal(`Failed to link subreddit from message ${message.content}:\n${error}`);
 		}
 	}
+
+	// Checks if message is "good bot"
+	if(message.content.toLocaleLowerCase() == "good bot")
+	{
+		message.channel.sendMessage("<3");
+	}
 });
 
 client.login(config.discordToken)
