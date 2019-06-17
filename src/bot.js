@@ -55,10 +55,10 @@ const saleNotifier = require("./utils/sale-notifier.js");
 // Processes sent message
 client.on("message", message => {
 	// Exits the function is the message is from a bot, this avoids infinite loops
-	if (message.author.bot) return;
+	if(message.author.bot) return;
 
 	// Sees if the sent message starts with the command prefix, and if it's in a channel called 'bot-commands'
-	if (message.content.startsWith(config.prefix) && message.channel.name == 'bot-commands')
+	if(message.content.startsWith(config.prefix) && message.channel.name == 'bot-commands')
 	{
 		// Gets arguments from message by space seperation
 		var args = message.content
@@ -85,10 +85,14 @@ client.on("message", message => {
 				message.reply(`There was a big oof in running ${commandName}, check the logs`);
 			}
 		}
+		else // If the command isn't on the list
+		{
+			message.reply(`${commandName} isn't a valid command, try \`!help\``);
+		}
 	}
 
 	// Checks for subreddit message (won't link the subreddit if there's already a link)
-	if (message.content.toLowerCase().includes("r/") && !message.content.toLowerCase().includes("https://"))
+	if(message.content.toLowerCase().includes("r/") && !message.content.toLowerCase().includes("https://"))
 	{
 		// Try catch because it will crash the bot if it fails
 		try
@@ -102,7 +106,7 @@ client.on("message", message => {
 	}
 
 	// Checks if message is "good bot"
-	if(message.content.toLocaleLowerCase() == "good bot")
+	if(message.content.toLocaleLowerCase().includes("good bot"))
 	{
 		message.channel.send("<3");
 	}
