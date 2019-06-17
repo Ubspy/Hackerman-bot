@@ -6,6 +6,7 @@ exports.args = [];
 
 exports.run = (message, args, logger) => {
     var gamesString = '```\n';
+    var saleCount = 0; // Stores number of games on sale
 
     // Sorts wishlist alphabetically
     wishlist.games.sort((a, b) => {
@@ -19,10 +20,16 @@ exports.run = (message, args, logger) => {
         if(game.onSale)
         {
             gamesString += `${game.name}\n`;
+            saleCount++;
         }
     });
 
     gamesString += "```";
+
+    if(saleCount == 0)
+    {
+        gamesString = 'There are currently no games on sale :(';
+    }
 
     // Sends string with games
     message.channel.send(gamesString).then(() => {

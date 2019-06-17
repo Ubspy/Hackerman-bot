@@ -6,6 +6,7 @@ exports.args = [];
 
 exports.run = (message, args, logger) => {
     var gamesString = '```\n';
+    var gamesCount = 0; // Keeps track of games on wishlist
 
     // Sorts wishlist alphabetically
     wishlist.games.sort((a, b) => {
@@ -17,9 +18,16 @@ exports.run = (message, args, logger) => {
     // Goes through and adds all the games
     wishlist.games.forEach(game => {
         gamesString += `${game.name}: ${game.onSale}\n`;
+        gamesCount++;
     });
 
     gamesString += "```";
+
+    // Will say there are no games on the wishlist if there aren't any
+    if(gamesCount == 0)
+    {
+        gamesString = 'You have no games on your wishlist';
+    }
 
     // Sends string with games
     message.channel.send(gamesString).then(() => {

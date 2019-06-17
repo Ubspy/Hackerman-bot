@@ -34,7 +34,7 @@ deleteMessages = (messages, channel) => {
                     //After the message it sent, it waits three seconds and deletes itself
                     setTimeout(() =>{
                         thisMessage.delete();
-                    }, 3000);
+                    }, 8000);
                 });
             }
         }).catch((error) => {

@@ -104,7 +104,7 @@ client.on("message", message => {
 	// Checks if message is "good bot"
 	if(message.content.toLocaleLowerCase() == "good bot")
 	{
-		message.channel.sendMessage("<3");
+		message.channel.send("<3");
 	}
 });
 
