@@ -30,9 +30,11 @@ exports.run = async (message, args, logger) => {
         logger.error(`Failed google custom search:\n${error}`);
     });
 
-    // Gets the link from the google search results
-    var link = res.data.items[0].link;
-
+    // Gets the link from the google search results, obtains the first one that has 'app' in the link to avoid forum posts
+    var link = res.data.items.find(item => {
+        return item.link.includes('app');
+    }).link;
+    
     // Gets the steam id by splitting it with / and takes the last element of the steam url, which is the id
     // The epic thing is every single steam url is different so you have do some oddball shit just to get the ID
     // The app ID is (hopefully) always after 'app/' so we look for that and get the ID afterwards
@@ -55,7 +57,7 @@ exports.run = async (message, args, logger) => {
             logger.info(`Removed game ${gameName} with id ${gameID} from wishlist`);
 
         }).catch(error => {
-            logger.error(`Failed to add game ${gameToSearch} to wishlist`);
+            logger.error(`Failed to add game ${gameToSearch} to wishlist\n${error}`);
         });
     }
     else
