@@ -40,7 +40,9 @@ module.exports = (announcementChannel, logger) => {
                         logger.info(`${game.name} is no longer on sale`);
                     }
                 }
-            });
+            }).catch(error => {
+	    	logger.error(`Failed to update sale status of ${game.name}\n${error}`);
+	    });
         });
     });
 };
