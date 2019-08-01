@@ -21,7 +21,7 @@ exports.run = async (message, args, logger) => {
     // auth: api key
     const options = {
         cx: config.googleSearchEngineID,
-        q: `${gameToSearch} -Franchise`, // This bit removes the franchise pages from steam, because if you search like "fallout" it gives you the fallout franchise page
+        q: `${gameToSearch}`, // This bit removes the franchise pages from steam, because if you search like "fallout" it gives you the fallout franchise page
         auth: config.googleToken
     };
 
@@ -62,7 +62,7 @@ exports.run = async (message, args, logger) => {
             logger.info(`Added game ${gameName} with id ${gameID} from wishlist`);
 
         }).catch(error => {
-            logger.error(`Failed to add game ${gameToSearch} to wishlist\n${error}`);
+            logger.error(`Failed to add game ${gameToSearch} ${link} to wishlist\n${error}`);
         });
     }
     else
