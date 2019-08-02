@@ -21,7 +21,7 @@ exports.run = async (message, args, logger) => {
     // auth: api key
     const options = {
         cx: config.googleSearchEngineID,
-        q: `${gameToSearch} -Franchise -news`, // This bit removes the franchise pages from steam, because if you search like "fallout" it gives you the fallout franchise page
+        q: `${gameToSearch}`, // This bit removes the franchise pages from steam, because if you search like "fallout" it gives you the fallout franchise page
         auth: config.googleToken
     };
 
