@@ -9,6 +9,7 @@ exports.run = (message, args, logger) => {
     // Checking for extra arguments.
     var helpArg = "";
 
+    // TODO: The help command still sends help even if there are too many arguments
     if(args.length > 1)
     {
         message.reply(`Too many arguments!!`);
@@ -46,6 +47,8 @@ exports.run = (message, args, logger) => {
                     }
                 }
 
+                // TODO: If there a help arg, all the descriptions still print
+                
                 // Finishes off command with its description
                 helpString += `: ${command.desc}\n`;
             }
