@@ -6,6 +6,18 @@ exports.desc = "Lists avalible commands with their usage";
 exports.args = [];
 
 exports.run = (message, args, logger) => {
+    // Checking for extra arguments.
+    var helpArg = "";
+
+    if(args.length > 1)
+    {
+        message.reply(`Too many arguments!!`);
+    }
+    else if(args.length == 1)
+    {
+        helpArg = args[0];
+    }
+
     // Starts out with this for the discord formatting
     var helpString = "```\n";
 
@@ -19,15 +31,19 @@ exports.run = (message, args, logger) => {
                 // Loads command from file
                 var command = require(`${__dirname}/${file}`);
 
-                // Adds command name
-                helpString += `${command.name}`
-
-                // Adds arguments if there are any
-                if(command.args.length > 0)
+                // If helpArg is empty OR if helpArg is same as command.name.
+                if(helpArg == "" || helpArg == command.name) 
                 {
-                    command.args.forEach(arg => {
-                        helpString += ` <${arg}>`;
-                    });
+                    // Adds command name
+                    helpString += `${command.name}`
+
+                    // Adds arguments if there are any
+                    if(command.args.length > 0)
+                    {
+                        command.args.forEach(arg => {
+                            helpString += ` <${arg}>`;
+                        });
+                    }
                 }
 
                 // Finishes off command with its description
