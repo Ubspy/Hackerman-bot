@@ -53,8 +53,6 @@ exports.run = (message, args, logger) => {
         }
     });
 
-    console.log(Array.isArray(rollResults));
-
     // Start formatting
     var rollString = '```\n';
 
