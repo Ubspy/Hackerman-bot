@@ -3,7 +3,7 @@ const fs = require('fs');
 
 exports.name = "help";
 exports.desc = "Lists avalible commands with their usage";
-exports.args = [];
+exports.args = ['command'];
 
 exports.run = (message, args, logger) => {
     // Checking for extra arguments.
@@ -20,8 +20,7 @@ exports.run = (message, args, logger) => {
         helpArg = args[0];
         // TODO: If there a help arg, all the descriptions still print
                 
-        // Finishes off command with its description
-        helpString += `: ${command.desc}\n`;
+        
     }
 
     // Starts out with this for the discord formatting
@@ -50,9 +49,10 @@ exports.run = (message, args, logger) => {
                             helpString += ` <${arg}>`;
                         });
                     }
-                }
 
-                
+                    // Finishes off command with its description
+                    helpString += `: ${command.desc}\n`;
+                }
             }
             catch(error)
             {
