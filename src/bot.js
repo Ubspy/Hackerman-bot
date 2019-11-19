@@ -118,18 +118,6 @@ client.login(config.discordToken)
 		// Outputs debug for when the bot has connected
 		logger.info("Connected as " + client.user.username);
 
-		/*// Gets announcement channel
-		var announcementChannel = client.channels.find(channel => channel.name === "announcements");
-
-		// Gets bot commands channel
-		var commandsChannel = client.channels.find(channel => channel.name === "bot-commands"); */
-
-		/* // Starts sale notifier
-		saleNotifier(announcementChannel, logger);
-
-		// Starts message cleaner
-		messageCleanup(commandsChannel, logger); */
-
 		var annoucementChannels = client.channels.filter(channel => channel.name == "announcements");
 		var commandsChannels = client.channels.filter(channel => channel.name == "bot-commands");
 
