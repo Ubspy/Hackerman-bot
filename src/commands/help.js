@@ -13,10 +13,15 @@ exports.run = (message, args, logger) => {
     if(args.length > 1)
     {
         message.reply(`Too many arguments!!`);
+        return 0;
     }
     else if(args.length == 1)
     {
         helpArg = args[0];
+        // TODO: If there a help arg, all the descriptions still print
+                
+        // Finishes off command with its description
+        helpString += `: ${command.desc}\n`;
     }
 
     // Starts out with this for the discord formatting
@@ -47,10 +52,7 @@ exports.run = (message, args, logger) => {
                     }
                 }
 
-                // TODO: If there a help arg, all the descriptions still print
                 
-                // Finishes off command with its description
-                helpString += `: ${command.desc}\n`;
             }
             catch(error)
             {
