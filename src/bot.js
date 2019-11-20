@@ -51,6 +51,7 @@ fs.readdirSync(__dirname + "/commands")
 // The utils won't be loaded like that because there's no good way to identify them, they also won't be as many
 const reddit = require("./utils/reddit.js");
 const saleNotifier = require("./utils/sale-notifier.js");
+const messageCleanup = require('./utils/command-channel-clearer.js')
 
 // Processes sent message
 client.on("message", message => {
@@ -117,11 +118,17 @@ client.login(config.discordToken)
 		// Outputs debug for when the bot has connected
 		logger.info("Connected as " + client.user.username);
 
-		// Gets announcement channel
-		var announcementChannel = client.channels.find(channel => channel.name === "announcements");
+		var annoucementChannels = client.channels.filter(channel => channel.name == "announcements");
+		var commandsChannels = client.channels.filter(channel => channel.name == "bot-commands");
 
-		// Starts sale notifier
-		saleNotifier(announcementChannel, logger);
+		annoucementChannels.forEach(channel => {
+			saleNotifier(channel, logger);
+		});
+
+		commandsChannels.forEach(channel => {
+			messageCleanup(channel, logger);
+		});
+
 	}).catch(error => {
 		logger.fatal(`Failed to login:\n${error}`);
 	});
