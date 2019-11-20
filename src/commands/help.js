@@ -9,7 +9,6 @@ exports.run = (message, args, logger) => {
     // Checking for extra arguments.
     var helpArg = "";
 
-    // TODO: The help command still sends help even if there are too many arguments
     if(args.length > 1)
     {
         message.reply(`Too many arguments!!`);
@@ -18,9 +17,6 @@ exports.run = (message, args, logger) => {
     else if(args.length == 1)
     {
         helpArg = args[0];
-        // TODO: If there a help arg, all the descriptions still print
-                
-        
     }
 
     // Starts out with this for the discord formatting
