@@ -80,8 +80,7 @@ exports.run = async (message, args, logger) => {
     }
     else
     {
-        steam.getGameDetails(gameID).then(details => {
-            message.reply(`${details.name} is already on the wishlist\n${link}`);
-        });
+        // Gets the name of the game from the wishlist by checking the IDs
+        message.reply(`${wishlist.games.find(game => game.id == gameID).name} is already on the wishlist\n${link}`);
     }
 };
