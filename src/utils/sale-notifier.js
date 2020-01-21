@@ -3,8 +3,7 @@ var schedule = require('node-schedule');
 const config = require('../../config/config.json'); // Goes 2 folders back to get config file
 const wishlist = require('../../config/wishlist.json');
 
-const SteamAPI = require('steamapi');
-const steam = new SteamAPI(config.steamToken);
+const request = require('request');
 
 module.exports = (announcementChannel, logger) => {
     var formatter = new Intl.NumberFormat('en-US', {
@@ -13,17 +12,25 @@ module.exports = (announcementChannel, logger) => {
     });
 
     // Job that'll run everyday at 6 pm on machine's localtime
-    var job = schedule.scheduleJob("* 18 * * *", () => {
+    var job = schedule.scheduleJob("3 14 * * *", () => {
         wishlist.games.forEach(game => {
-            steam.getGameDetails(game.id).then(details => {   
-                // Before seeing if it's on sale, we need to see if it has a price
-                if(typeof details.price_overview !== 'undefined' && details.price_overview)
-                {             
-                    // Checks if game is on sale
-                    if(details.price_overview.discount_percent > 0 && !game.onSale)
-                    {
-                        // Announces it in the announcement channel
-                        announcementChannel.send(`${game.name} is ${details.price_overview.discount_percent}% off!. It's on sale from ${formatter.format(details.price_overview.initial/100)} to ${formatter.format(details.price_overview.final/100)}\n${game.link}`);
+            request({
+                url: `https://store.steampowered.com/api/appdetails?appids=${game.id}`,
+                json: true
+            },
+            (error, response, body) => {
+                var data = body[game.id].data;
+
+                if(error)
+                {
+                    // This happens if the page couldn't be reached
+                    logger.error(`Something went horribly wrong when looking for info on ${game.name} with id ${game.id}: ` + error);
+                    message.reply("Something went horribly wrong, please check the log files");
+                }
+                else if(data.price_overview.discount_percent > 0 && !game.onSale) // Checks if game is on sale
+                {
+                    // Announces it in the announcement channel
+                    announcementChannel.send(`${game.name} is ${data.price_overview.discount_percent}% off!. It's on sale from ${formatter.format(data.price_overview.initial/100)} to ${formatter.format(data.price_overview.final/100)}\n${game.link}`);
 
                         // Changes game's sale state to true and writes to the file
                         game.onSale = true;
@@ -40,9 +47,7 @@ module.exports = (announcementChannel, logger) => {
                         logger.info(`${game.name} is no longer on sale`);
                     }
                 }
-            }).catch(error => {
-	    	logger.error(`Failed to update sale status of ${game.name}\n${error}`);
-	    });
+            );
         });
     });
 };

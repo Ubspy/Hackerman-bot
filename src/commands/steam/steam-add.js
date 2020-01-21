@@ -3,9 +3,7 @@ const {google} = require('googleapis');
 const search = google.customsearch('v1');
 const config = require('../../../config/config.json'); // Goes 3 folders back to get config file
 const wishlist = require('../../../config/wishlist.json');
-
-const SteamAPI = require('steamapi');
-const steam = new SteamAPI(config.steamToken);
+const request = require("request");
 
 exports.name = "add";
 exports.desc = "Add a steam game to the wishlist of games";
@@ -45,24 +43,40 @@ exports.run = async (message, args, logger) => {
     // Checks to see if the wishlist already contains the game
     if(!wishlist.games.some(game => game.id === gameID))
     {
-        // Gets the game details from steam
-        steam.getGameDetails(gameID).then(details => {
-            // Gets the name from steam data
-            var gameName = details.name;
+        // Notifies the user that the game was added
+        message.reply(`Added ${gameName} to wishlish\n${link}`);
 
-            // If a game doesn't have a price there is no price_overview element, so we need to check for it
-            var gameOnSale = (details.price_overview) ? (details.price_overview.discount_percent > 0) : false;
+        // Node js steam api is big stinky so we're using the steam api through steam
+        // You put the add ip in this link and it gives you fancy json with all the game ingo
+        request({
+            url: `https://store.steampowered.com/api/appdetails?appids=${gameID}`,
+            json: true
+        },
+        (error, response, body) => {
+            var data = body[gameID].data;
 
-            // Adds game to wishlist object, then writes it to the file
-            wishlist.games.push({"name" : gameName, "id" : gameID, "link" : link, "onSale" : gameOnSale});
-            fs.writeFileSync(`${__dirname}/../../../config/wishlist.json`, JSON.stringify(wishlist));
+            if(error)
+            {
+                // This happens if the page couldn't be reached
+                logger.error(`Something went horribly wrong when looking for info on ${gameName} with id ${gameID}: ` + error);
+                message.reply("Something went horribly wrong, please check the log files");
+            }
+            else if(typeof data.price_overview == 'undefined')
+            {
+                // If there's no price overview, or if the game is free and there's no price set, then there won't be sale information
+                message.reply(`Either this is a free game and you're dumb, or there's no price information avalible for the game yet, the game wasn't added to the wishlist`);
+            }
+            else
+            {
+                // Gets the current sale status
+                var gameOnSale = (data.price_overview.discount_percent > 0);
 
-            // Notifies the user that the game was added
-            message.reply(`Added ${gameName} to wishlish\n${link}`);
-            logger.info(`Added game ${gameName} with id ${gameID} from wishlist`);
-
-        }).catch(error => {
-            logger.error(`Failed to add game ${gameToSearch} ${link} to wishlist\n${error}`);
+                // Adds game to wishlist object, then writes it to the file
+                wishlist.games.push({"name" : data.name, "id" : gameID, "link" : link, "onSale" : gameOnSale});
+                fs.writeFileSync(`${__dirname}/../../../config/wishlist.json`, JSON.stringify(wishlist)); 
+                
+                logger.info(`Added game ${data.name} with id ${gameID} from wishlist`);
+            }
         });
     }
     else
