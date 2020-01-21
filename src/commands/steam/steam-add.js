@@ -43,9 +43,6 @@ exports.run = async (message, args, logger) => {
     // Checks to see if the wishlist already contains the game
     if(!wishlist.games.some(game => game.id === gameID))
     {
-        // Notifies the user that the game was added
-        message.reply(`Added ${gameName} to wishlish\n${link}`);
-
         // Node js steam api is big stinky so we're using the steam api through steam
         // You put the add ip in this link and it gives you fancy json with all the game ingo
         request({
@@ -75,7 +72,9 @@ exports.run = async (message, args, logger) => {
                 wishlist.games.push({"name" : data.name, "id" : gameID, "link" : link, "onSale" : gameOnSale});
                 fs.writeFileSync(`${__dirname}/../../../config/wishlist.json`, JSON.stringify(wishlist)); 
                 
-                logger.info(`Added game ${data.name} with id ${gameID} from wishlist`);
+                // Notifies the user and the logger that the game was added
+                logger.info(`Added game ${data.name} with id ${gameID} to wishlist`);
+                message.reply(`Added ${data.name} to wishlish\n${link}`);
             }
         });
     }
