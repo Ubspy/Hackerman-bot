@@ -30,9 +30,6 @@ exports.run = async (message, args, logger) => {
     // Gets the link from the google search results
     var link = res.data.items[0].link;
 
-    // Gets the name from the result title
-    var gameName = res.data.items[0].title;
-
     // Gets the steam id by splitting it with / and takes the last element of the steam url, which is the id
     // The epic thing is every single steam url is different so you have do some oddball shit just to get the ID
     // The app ID is (hopefully) always after 'app/' so we look for that and get the ID afterwards
@@ -41,6 +38,9 @@ exports.run = async (message, args, logger) => {
     // Checks to see if the wishlist already contains the game
     if(wishlist.games.some(game => game.id === gameID))
     {
+        // Gets the name from the json file
+        var gameName = wishlist.games.find(game => game.id == gameID).name;
+
         // Notifies the user that the game was added
         message.reply(`Removed ${gameName} to wishlish\n${link}`);
         
@@ -48,7 +48,7 @@ exports.run = async (message, args, logger) => {
         wishlist.games.pop({"name" : gameName, "id" : gameID});
         fs.writeFileSync(`${__dirname}/../../../config/wishlist.json`, JSON.stringify(wishlist));
 
-        logger.info(`Added game ${gameName} with id ${gameID} to wishlist`);
+        logger.info(`Removed game ${gameName} with id ${gameID} to wishlist`);
     }
     else
     {
