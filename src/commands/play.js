@@ -27,7 +27,7 @@ exports.run = async function(message, args, logger) {
 
             // Read the audio folder and for each mp3 file it'll add that to the list
             fs.readdirSync(`${__dirname}/../../audio/`)
-            //.filter(file => file.endsWith('.mp3'))
+            .filter(file => file.endsWith('.mp3'))
             .forEach(file => {
                 console.log(file);
                 messageStr += file + '\n';

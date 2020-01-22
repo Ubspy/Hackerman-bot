@@ -28,6 +28,26 @@ log4js.configure({
 
 const logger = log4js.getLogger();
 
+// First thing is we will check to make sure there's a config file and a wishlist file
+if(!fs.existsSync(`${__dirname}/../config/config.json`))
+{
+	logger.fatal(`There is no config file, make sure to place a config file named "config.json" in the config folder with the same properties as the example, just with actual api keys`);
+	process.exit(0); // Exits the program because without the config there's nothing
+}
+
+// Once we know we have the config file we should check for the wishlist.json file
+// It doesn't come with the repo so if it doesn't exist in the file system on boot we will make it
+if(!fs.existsSync(`${__dirname}/../config/wishlist.json`))
+{
+	// This is blank json object that just holds the games in an array
+	var wishlistJson = {
+		games: []
+	}
+
+	logger.info(`Creating wishlist.json file`);
+	fs.writeFileSync(`${__dirname}/../config/wishlist.json`, JSON.stringify(wishlistJson));
+}
+
 // readdirSync will return an array of each file in the commands folder
 // after that, they're filtered to only include files ending with .js
 fs.readdirSync(__dirname + "/commands")

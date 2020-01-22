@@ -1,5 +1,6 @@
 # Config
 config.json
+wishlist.json
 
 # Audio files
 audio/**

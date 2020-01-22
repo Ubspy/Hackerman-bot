@@ -2,6 +2,5 @@
     "discordToken" : "<discord api token here>",
     "googleToken" : "<google api token here>",
     "googleSearchEngineID" : "<google cse id here>",
-    "steamToken" : "<steam api token here>",
     "prefix" : "!"
 }
