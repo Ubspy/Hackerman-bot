@@ -12,7 +12,7 @@ module.exports = (announcementChannel, logger) => {
     });
 
     // Job that'll run everyday at 6 pm on machine's localtime
-    var job = schedule.scheduleJob("3 14 * * *", () => {
+    var job = schedule.scheduleJob("* 18 * * *", () => {
         wishlist.games.forEach(game => {
             request({
                 url: `https://store.steampowered.com/api/appdetails?appids=${game.id}`,
