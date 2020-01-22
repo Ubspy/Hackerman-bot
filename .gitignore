@@ -1,6 +1,9 @@
 # Config
 config.json
 
+# Audio files
+audio/**
+
 # Package-lock
 package-lock.json
 

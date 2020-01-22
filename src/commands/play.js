@@ -8,12 +8,7 @@ exports.args = ['file'];
 var isPlaying = false;
 
 exports.run = async function(message, args, logger) {
-    if(isPlaying)
-    {
-        message.reply("Wait your turn! Audio is already playing, I can only do so much :(");
-        return 0; // Exits the function
-    }
-    else if(args.length > 1)
+    if(args.length > 1)
     {
         message.reply("There were too many arguments!")
     }
@@ -28,12 +23,13 @@ exports.run = async function(message, args, logger) {
         if(fileName == "list")
         {
             // Here we gotta list files in the audio folder
-            messageStr = "Here are the playable files:\n```";
+            messageStr = "Here are the playable files:\n```\n";
 
             // Read the audio folder and for each mp3 file it'll add that to the list
             fs.readdirSync(`${__dirname}/../../audio/`)
-            .filter(file => file.endsWith('.mp3'))
+            //.filter(file => file.endsWith('.mp3'))
             .forEach(file => {
+                console.log(file);
                 messageStr += file + '\n';
             });
 
@@ -43,6 +39,10 @@ exports.run = async function(message, args, logger) {
             }).catch(error => {
                 logger.error(`Error listing audio files:\n${error}`)
             });
+        }
+        else if(isPlaying) // If there's currently anything playing
+        {
+            message.reply("Wait your turn! Audio is already playing, I can only do so much :(");
         }
         else if(fs.existsSync(`${__dirname}/../../audio/${fileName}.mp3`))
         {
