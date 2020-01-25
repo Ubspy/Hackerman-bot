@@ -13,6 +13,8 @@ module.exports = (announcementChannel, logger) => {
 
     // Job that'll run everyday at 6 pm on machine's localtime
     var job = schedule.scheduleJob("33 13 * * *", () => {
+        announcementMessage = ""; // Initial blank announcement message
+
         wishlist.games.forEach(game => {
             request({
                 url: `https://store.steampowered.com/api/appdetails?appids=${game.id}`,
@@ -29,25 +31,30 @@ module.exports = (announcementChannel, logger) => {
                 }
                 else if(data.price_overview.discount_percent > 0 && !game.onSale) // Checks if game is on sale
                 {
-                    // Announces it in the announcement channel
-                    announcementChannel.send(`${game.name} is ${data.price_overview.discount_percent}% off!. It's on sale from ${formatter.format(data.price_overview.initial/100)} to ${formatter.format(data.price_overview.final/100)}\n${game.link}`);
+                    // Adds game to announcement message
+                    announcementMessage += `${game.name} is ${data.price_overview.discount_percent}% off!. It's on sale from ${formatter.format(data.price_overview.initial/100)} to ${formatter.format(data.price_overview.final/100)}\n${game.link}\n\n\n`;
 
-                        // Changes game's sale state to true and writes to the file
-                        game.onSale = true;
-                        fs.writeFileSync(`${__dirname}/../../config/wishlist.json`, JSON.stringify(wishlist));
+                    // Changes game's sale state to true and writes to the file
+                    game.onSale = true;
+                    fs.writeFileSync(`${__dirname}/../../config/wishlist.json`, JSON.stringify(wishlist));
 
-                        logger.info(`Notified users that ${game.name} is on sale`);
-                    }
-                    else if(data.price_overview.discount_percent == 0 && game.onSale)
-                    {
-                        // Changes game's sale state to false and writes to the file
-                        game.onSale = false;
-                        fs.writeFileSync(`${__dirname}/../../config/wishlist.json`, JSON.stringify(wishlist));
- 
-                        logger.info(`${game.name} is no longer on sale`);
-                    }
+                    logger.info(`Notified users that ${game.name} is on sale`);
                 }
-            );
+                else if(data.price_overview.discount_percent == 0 && game.onSale)
+                {
+                    // Changes game's sale state to false and writes to the file
+                    game.onSale = false;
+                    fs.writeFileSync(`${__dirname}/../../config/wishlist.json`, JSON.stringify(wishlist));
+
+                    logger.info(`${game.name} is no longer on sale`);
+                }
+            });
+
+            // At the end we'll check the message str
+            if(announcementMessage != "")
+            {
+                announcementChannel.send(announcementMessage);
+            }
         });
     });
 };
