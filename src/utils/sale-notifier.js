@@ -12,7 +12,7 @@ module.exports = (announcementChannel, logger) => {
     });
 
     // Job that'll run everyday at 6 pm on machine's localtime
-    var job = schedule.scheduleJob("* 18 * * *", () => {
+    var job = schedule.scheduleJob("33 13 * * *", () => {
         wishlist.games.forEach(game => {
             request({
                 url: `https://store.steampowered.com/api/appdetails?appids=${game.id}`,
@@ -38,7 +38,7 @@ module.exports = (announcementChannel, logger) => {
 
                         logger.info(`Notified users that ${game.name} is on sale`);
                     }
-                    else if(details.price_overview.discount_percent == 0 && game.onSale)
+                    else if(data.price_overview.discount_percent == 0 && game.onSale)
                     {
                         // Changes game's sale state to false and writes to the file
                         game.onSale = false;
