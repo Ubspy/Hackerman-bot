@@ -7,7 +7,7 @@ exports.args = ['file'];
 // Variable to make sure two play commands won't play at once
 var isPlaying = false;
 
-exports.run = async function(message, args, logger) {
+exports.run = function(message, args, logger) {
     if(args.length > 1)
     {
         message.reply("There were too many arguments!")

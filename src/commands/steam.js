@@ -2,7 +2,6 @@
 const fs = require('fs');
 var steamCommands = new Map();
 
-
 exports.name = "steam";
 exports.desc = "The steam subsystem of the bot, for more info type '!steam help'";
 exports.args = ['action'];
