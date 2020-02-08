@@ -152,3 +152,8 @@ client.login(config.discordToken)
 	}).catch(error => {
 		logger.fatal(`Failed to login:\n${error}`);
 	});
+
+// Method for getting the discord client
+exports.getClient = () => {
+	return client;
+}
