@@ -6,13 +6,38 @@ const config = require('../../../config/config.json');
 const client = require('../../bot.js').getClient();
 
 exports.name = "play";
-exports.desc = "Plays an audio file stored on the server";
+exports.desc = "Plays an a video from youtube, also resumes the player when paused";
 exports.args = ['file'];
 
 exports.run = (message, args, logger) => {
     if(args.length < 1)
     {
-        message.reply("You didn't specify a song to play!");
+        // We're going to check and see if the bot is connected to any voice channels
+        if(client.voiceConnections.first())
+        {
+            // If it is then we'll look for a dispatcher to resume
+            const dispatcher = client.voiceConnections.first().dispatcher;
+
+            if(dispatcher)
+            {
+                // If there's a dispatcher to be resumed, then we'll resume it
+                dispatcher.resume();
+                message.reply(`Resuming vibes...`);
+                logger.info(`Dispatcher resumed`);
+            }
+            else
+            {
+                // If there's no dispatcher but they tried to play something
+                client.voiceConnections.first().disconnect();
+                logger.info(`Disconnected form voice, user tried to resume but no dispatcher was found`);
+                message.reply(`There was nothing to resume, so I disconnected from voice \nTry specifying a song to play`);
+            }
+        }
+        else
+        {
+            // We get here if they're not connected to a voice channel
+            message.reply(`You didn't specify a song for me to play >:(`);
+        }
     }
     else // If all the requirements are met
     {

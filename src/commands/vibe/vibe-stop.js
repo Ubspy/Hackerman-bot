@@ -19,12 +19,16 @@ exports.run = (message, args, logger) => {
         {
             // Tells it to stop if there's a dispatcher running
             dispatcher.end();
+            message.reply(`Stopping vibes...`);
+            logger.info(`Ended dispatcher`);
         }
         else
         {
             // Since there's a chance that the dispatcher stopped and the bot remained in a voice channel
             // if there's no current dispatcher then we'll just disconnect from voice
             client.voiceConnections.first().disconnect();
+            message.reply(`Looks like I was already done vibing... I don't know how this happened`);
+            logger.info(`Disconnected from voice channel`);
         }
     }
 }
