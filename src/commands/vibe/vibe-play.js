@@ -66,9 +66,8 @@ exports.run = (message, args, logger) => {
 
                     // This then joins the channel to play the stream
                     userChannel.join().then(connection => {
-
                         // Gets the stream and immediately dispatches it
-                        const stream = ytdl(videoUrl, { filter : 'audioonly' });
+                        const stream = ytdl(videoUrl);
                         const dispatcher = connection.playStream(stream);
         
                         // When the file is done playing
