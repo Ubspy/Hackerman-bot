@@ -76,6 +76,25 @@ exports.run = (message, args, logger) => {
                     var minutes = Math.floor((details.lengthSeconds - (hours * 3600)) / 60);
                     var seconds = details.lengthSeconds - (hours * 3600) - (minutes * 60);
 
+                    // Formats the string all nice and pretty like
+                    if(seconds < 10)
+                    {
+                        // If seconds is single digit then we'll force a 0 to be before it in the string
+                        seconds = `0${seconds}`;
+                    }
+
+                    if(minutes < 10)
+                    {
+                        // Same thing with minutes
+                        minutes = `0${minutes}`;
+                    }
+
+                    if(hours < 10)
+                    {
+                        // Same thing with hours, shocker
+                        hours = `0${hours}`;
+                    }
+
                     // Get time str
                     var time = `${minutes}:${seconds}`;
 
@@ -128,8 +147,9 @@ playSong = (song, connection, message, logger, newPlay = false) => {
     const dispatcher = connection.playStream(song.stream);
 
     dispatcher.on("start", () => {
-        // On the start of the dispatcher, THEN we send the message
+        logger.info(`Started audio from ${song.videoUrl}`);
 
+        // On the start of the dispatcher, THEN we send the message
         // If it's not continuing the queue then we'll use a reply, otherwise we'll just send a normal message
         if(newPlay)
         {
@@ -146,14 +166,10 @@ playSong = (song, connection, message, logger, newPlay = false) => {
 
     // When the file is done playing
     dispatcher.on("end", end => {
-        logger.info(`Played audio from ${song.videoURL}`);
-
-        console.log("Before: ", vibe.getQueueLength());
+        logger.info(`Finished audio from ${song.videoUrl}`);
 
         // When the song is done we'll remove it from the queue (it'll be the first song in the queue)
         vibe.removeSongFromQueue(0);
-
-        console.log("After: ", vibe.getQueueLength());
 
         // When we end the current song we wanna see if there's another song to play
         if(vibe.getQueueLength() > 0)
@@ -177,7 +193,7 @@ playSong = (song, connection, message, logger, newPlay = false) => {
     // If the dispatcher has an error
     dispatcher.on("error", error => {
         connection.disconnect();
-        logger.error(`Error while playing audio from ${song.videoURL}:\n${error}`);
+        logger.error(`Error while playing audio from ${song.videoUrl}:\n${error}`);
 
         // We also clear the activity
         client.user.setActivity("");
