@@ -2,6 +2,9 @@
 const fs = require('fs');
 var vibeCommands = new Map();
 
+// This variable will hold the queue
+var songQueue = [];
+
 exports.name = "vibe";
 exports.desc = "The vibe subsystem of the bot, for more info type '!vibe help'";
 exports.args = ['action'];
@@ -30,12 +33,12 @@ exports.run = (message, args, logger) => {
         });
     }
 
+    // Removes the first element from the args array and sets it to this variable, also sets it to lowercase
+    var commandName = args.shift().toLowerCase();
+
     // Checks to see if there are any arguments before trying
     if(args.length > 0)
     {
-        // Removes the first element from the args array and sets it to this variable, also sets it to lowercase
-        var commandName = args.shift().toLowerCase();
-
         // If our command list has a command with the typed name, it tries it
         if(vibeCommands.has(commandName))
         {
@@ -55,14 +58,70 @@ exports.run = (message, args, logger) => {
         }
         else
         {
-            // If the subcommand given doesn't exist, we'll just have it play that file
-            args.unshift(commandName);
-            console.log(args);
-            vibeCommands.get("play").run(message, args, logger);
+            // If it doesn't recognize the subcommand it gets mad
+            message.reply(`${commandName} is not a valid vibe subcommand! Try running\`!vibe help\``);
         }
     }
     else // If no argument is provided
     {
         message.reply("You need to specify a subcommand, try \`!vibe help\`");
     }
+};
+
+/*
+    All of these elements will take a song object. Each object should have the following:
+    - videoUrl: the video url, so we can show the user what video we're grabbing from
+    - streamUrl: the stream url of a song (NOT the youtube link, to save space I don't want to import ytdl in two seperate files)
+    - name: the name of the song (should be obvious)
+    - author: also pretty obvious
+    - duration: like I really hope I don't need to explain this
+
+    All of these variables are gonna be stored in the RAM instead of grabbed just before, that way if they want to list the queue they have all the info right there
+*/
+
+exports.addSongToQueue = (song, logger) => {
+    // We're going to check for the properties of the object because we don't want any kind of null pointer exception or something when playing a song
+    if(!song.videoUrl)
+    {
+        logger.error(`Given song does not have a video url!`);
+        return;
+    }
+    else if(!song.streamUrl)
+    {
+        logger.error(`Given song does not have a stream url!`);
+        return;
+    }
+    else if(!song.name)
+    {
+        logger.error(`Given song does not have a name!`);
+        return;
+    }
+    else if(!song.author)
+    {
+        logger.error(`Given song does not have an author!`);
+        return;
+    }
+    else if(!song.duration)
+    {
+        logger.error(`Given song does not have a duration!`);
+        return;
+    }
+
+    // Adds the song to the end of the queue array
+    songQueue.push(song);
+};
+
+exports.removeSongFromQueue = index => {
+    // The splice function removed a specific element from an array
+    songQueue.splice(index);
+};
+
+exports.getSongFromQueue = index => {
+    // Returns the song at the given index
+    return songQueue[index];
+};
+
+exports.getQueueLength = () => {
+    // I really hope I don't need to comment this part
+    return songQueue.length;
 };
