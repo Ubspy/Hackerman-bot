@@ -4,7 +4,8 @@ const search = google.customsearch('v1');
 const ytdl = require('ytdl-core');
 const config = require('../../../config/config.json');
 const client = require('../../bot.js').getClient();
-const addSongToQueue = require('../vibe.js').addSongToQueue;
+
+const vibe = require('../vibe.js');
 
 exports.name = "play";
 exports.desc = "Plays an a video from youtube, also resumes the player when paused";
@@ -84,13 +85,13 @@ exports.run = (message, args, logger) => {
                     // We're gonna add the song to the queue so we can get the details about it when the user asks later
                     var song = {
                         videoUrl: videoUrl,
-                        streamUrl: ytdl(videoUrl),
+                        stream: ytdl(videoUrl),
                         name: details.title,
                         author: details.author,
                         duration: time,
                     };
 
-                    addSongToQueue(song);
+                    vibe.addSongToQueue(song, logger);
 
                     // If there's currently anything playing, we'll add it to the queue instead of trying to play it
                     if(client.voiceConnections.size > 0)
@@ -102,27 +103,8 @@ exports.run = (message, args, logger) => {
                     {
                         // This then joins the channel to play the stream
                         userChannel.join().then(connection => {
-                            // Gets the stream and immediately dispatches it
-                            const stream = ytdl(videoUrl);
-                            const dispatcher = connection.playStream(stream);
-
-                            dispatcher.on("start", () => {
-                                // On the start of the dispatcher, THEN we send the message
-                                message.reply(`Now playing ${details.title} by ${details.author} - ${time}\n${videoUrl}`);
-                            });
-            
-                            // When the file is done playing
-                            dispatcher.on("end", end => {
-                                connection.disconnect(); // Disconnect
-                                logger.info(`Played audio from ${videoUrl}`);
-                            });
-            
-                            // If the dispatcher has an error
-                            dispatcher.on("error", error => {
-                                connection.disconnect();
-                                logger.error(`Error while playing audio from ${videoUrl}:\n${error}`);
-                            });
-
+                            // Since we already have all the song information, we'll just use the method to play the song
+                            playSong(song, connection, message, logger, true);
                         }).catch(error => { // Don't forget the error catching
                             logger.error(`Could not connect to voice channel:\n${error}`)
                         });
@@ -139,3 +121,65 @@ exports.run = (message, args, logger) => {
         }
     }
 }
+
+// Here we will have a recusrive function for playing a song
+// We have the default parameter of a new play as false, but if specified otherwise then we'll deal with it accordingly
+playSong = (song, connection, message, logger, newPlay = false) => {
+    const dispatcher = connection.playStream(song.stream);
+
+    dispatcher.on("start", () => {
+        // On the start of the dispatcher, THEN we send the message
+
+        // If it's not continuing the queue then we'll use a reply, otherwise we'll just send a normal message
+        if(newPlay)
+        {
+            message.reply(`Now playing "${song.name}" by ${song.author} - ${song.duration}\n${song.videoUrl}`);
+        }
+        else
+        {
+            message.channel.send(`Now playing "${song.name}" by ${song.author} - ${song.duration}\n${song.videoUrl}`);
+        }
+
+        // We will also set the bots activity status
+        client.user.setActivity(song.title, {type: "PLAYING"});
+    });
+
+    // When the file is done playing
+    dispatcher.on("end", end => {
+        logger.info(`Played audio from ${song.videoURL}`);
+
+        console.log("Before: ", vibe.getQueueLength());
+
+        // When the song is done we'll remove it from the queue (it'll be the first song in the queue)
+        vibe.removeSongFromQueue(0);
+
+        console.log("After: ", vibe.getQueueLength());
+
+        // When we end the current song we wanna see if there's another song to play
+        if(vibe.getQueueLength() > 0)
+        {
+            // If there are songs left in the queue, we gotta play the next one
+            var nextSong = vibe.getSongFromQueue(0);
+
+            // Recursively calls the method to play the next song
+            playSong(nextSong, connection, message, logger);
+        }
+        else
+        {
+            // If there isn't we disconnect because the play queue is now done
+            connection.disconnect();
+
+            // We also clear the activity
+            client.user.setActivity("");
+        }
+    });
+
+    // If the dispatcher has an error
+    dispatcher.on("error", error => {
+        connection.disconnect();
+        logger.error(`Error while playing audio from ${song.videoURL}:\n${error}`);
+
+        // We also clear the activity
+        client.user.setActivity("");
+    });
+};

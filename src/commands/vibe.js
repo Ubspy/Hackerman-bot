@@ -37,7 +37,7 @@ exports.run = (message, args, logger) => {
     var commandName = args.shift().toLowerCase();
 
     // Checks to see if there are any arguments before trying
-    if(args.length > 0)
+    if(commandName)
     {
         // If our command list has a command with the typed name, it tries it
         if(vibeCommands.has(commandName))
@@ -71,7 +71,7 @@ exports.run = (message, args, logger) => {
 /*
     All of these elements will take a song object. Each object should have the following:
     - videoUrl: the video url, so we can show the user what video we're grabbing from
-    - streamUrl: the stream url of a song (NOT the youtube link, to save space I don't want to import ytdl in two seperate files)
+    - stream: the playable string created from ytdl
     - name: the name of the song (should be obvious)
     - author: also pretty obvious
     - duration: like I really hope I don't need to explain this
@@ -81,30 +81,30 @@ exports.run = (message, args, logger) => {
 
 exports.addSongToQueue = (song, logger) => {
     // We're going to check for the properties of the object because we don't want any kind of null pointer exception or something when playing a song
-    if(!song.videoUrl)
+    if(!song.hasOwnProperty("videoUrl"))
     {
         logger.error(`Given song does not have a video url!`);
-        return;
+        return 0;
     }
-    else if(!song.streamUrl)
+    else if(!song.hasOwnProperty("stream"))
     {
         logger.error(`Given song does not have a stream url!`);
-        return;
+        return 0;
     }
-    else if(!song.name)
+    else if(!song.hasOwnProperty("name"))
     {
         logger.error(`Given song does not have a name!`);
-        return;
+        return 0;
     }
-    else if(!song.author)
+    else if(!song.hasOwnProperty("author"))
     {
         logger.error(`Given song does not have an author!`);
-        return;
+        return 0;
     }
-    else if(!song.duration)
+    else if(!song.hasOwnProperty("duration"))
     {
         logger.error(`Given song does not have a duration!`);
-        return;
+        return 0;
     }
 
     // Adds the song to the end of the queue array
@@ -113,12 +113,17 @@ exports.addSongToQueue = (song, logger) => {
 
 exports.removeSongFromQueue = index => {
     // The splice function removed a specific element from an array
-    songQueue.splice(index);
+    songQueue.splice(index, 1);
 };
 
 exports.getSongFromQueue = index => {
     // Returns the song at the given index
     return songQueue[index];
+};
+
+exports.clearQueue = () => {
+    // Sets the song queue to be empty
+    songQueue = []
 };
 
 exports.getQueueLength = () => {

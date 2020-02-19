@@ -1,4 +1,5 @@
 const client = require('../../bot.js').getClient();
+const clearQueue = require("../vibe.js").clearQueue;
 
 exports.name = "stop";
 exports.desc = "Stops the audio currently being played";
@@ -17,8 +18,14 @@ exports.run = (message, args, logger) => {
 
         if(dispatcher)
         {
+            // Clears the queue of songs
+            clearQueue();
+
             // Tells it to stop if there's a dispatcher running
+            // We don't disconnect from vc afterwards because the dispatcher is set to trigger a voice disconnect on end IF there's no queue
             dispatcher.end();
+
+            // Logs the stoping of vibes
             message.reply(`Stopping vibes...`);
             logger.info(`Ended dispatcher`);
         }
