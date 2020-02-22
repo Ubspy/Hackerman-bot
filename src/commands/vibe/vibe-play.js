@@ -2,9 +2,9 @@ const fs = require('fs');
 const {google} = require('googleapis');
 const search = google.customsearch('v1');
 const ytdl = require('ytdl-core');
+
 const config = require('../../../config/config.json');
 const client = require('../../bot.js').getClient();
-
 const vibe = require('../vibe.js');
 
 exports.name = "play";
@@ -161,7 +161,9 @@ playSong = (song, connection, message, logger, newPlay = false) => {
         }
 
         // We will also set the bots activity status
-        client.user.setActivity(song.title, {type: "PLAYING"});
+        client.user.setActivity(song.name, {type: "PLAYING"}).catch(error => {
+            logger.error(`Could not set activity:\n${error}`);
+        });
     });
 
     // When the file is done playing
