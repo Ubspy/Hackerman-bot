@@ -101,9 +101,14 @@ exports.addSongToQueue = (song, logger) => {
         logger.error(`Given song does not have an author!`);
         return 0;
     }
-    else if(!song.hasOwnProperty("duration"))
+    else if(!song.hasOwnProperty("durationStr"))
     {
-        logger.error(`Given song does not have a duration!`);
+        logger.error(`Given song does not have a duration string!`);
+        return 0;
+    }
+    else if(!song.hasOwnProperty("durationInSeconds"))
+    {
+        logger.error(`Given song does not have a duration in seconds!`);
         return 0;
     }
 
