@@ -59,16 +59,10 @@ exports.run = (message, args, logger) => {
 
         if(userChannel)
         {
-            // This does the actual search results
-            search.cse.list(options).then(res => {
-                // Gets url from search to play
-                var videoUrl = res.data.items[0].formattedUrl;
-
-                // Gets the video info from ytdl
-                var videoID = ytdl.getURLVideoID(videoUrl);
-
-                // Gets the video info
+            fetchVideoID(options, 0, message).then(videoID => {
+               // Gets the video info once we have a valid ID
                 ytdl.getBasicInfo(videoID).then(videoInfo => {
+                    // Here is a variable holding all the video deatils
                     var details = videoInfo.player_response.videoDetails;
 
                     // Get the number of hours, minutes and remaining seconds in a video
@@ -101,10 +95,14 @@ exports.run = (message, args, logger) => {
                     // Add hours onto the str only if there's at least 1 hour of video
                     time = (hours > 0) ? `${hours}:${time}` : time;
 
+                    // Here we get the video url via basic youtube pattern, and the get the playable steam
+                    var videoUrl = `https://youtube.com/watch?v=${videoID}`
+                    var playableStream = ytdl(videoUrl);
+
                     // We're gonna add the song to the queue so we can get the details about it when the user asks later
                     var song = {
                         videoUrl: videoUrl,
-                        stream: ytdl(videoUrl),
+                        stream: playableStream,
                         name: details.title,
                         author: details.author,
                         durationStr: time,
@@ -129,9 +127,10 @@ exports.run = (message, args, logger) => {
                             logger.error(`Could not connect to voice channel:\n${error}`)
                         });
                     }
-                });
+                }); 
             }).catch(error => {
                 logger.error(`Failed google custom search:\n${error}`);
+                message.reply(`Failed to search for songs :(`);
             });
         }
         else
@@ -141,6 +140,33 @@ exports.run = (message, args, logger) => {
         }
     }
 }
+
+// This will be the function for fetching a video, and we'll return a valid promise if it's a valid one
+fetchVideoID = (options, index, message) => {
+    return new Promise((resolve, reject) => {
+        // This does the actual search results
+        search.cse.list(options).then(res => {
+            // Gets url from search to play
+            var videoUrl = res.data.items[index].formattedUrl;
+
+            // Here we're going to TRY and get the video id, if it fails the video is gonna need to be fixed
+            try
+            {
+                var videoID = ytdl.getURLVideoID(videoUrl);
+                resolve(videoID); // If it's a valid ID we'll return it as a successful promise
+            }
+            catch(error)
+            {
+                // If it's not valid, we try to fetch the next video id and resolve it
+                fetchVideoID(options, index+1, message).then(videoID => {
+                    resolve(videoID);
+                });
+            }
+        }).catch(error => {
+            reject(error);
+        });
+    });
+};
 
 // Here we will have a recusrive function for playing a song
 // We have the default parameter of a new play as false, but if specified otherwise then we'll deal with it accordingly
