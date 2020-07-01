@@ -149,6 +149,14 @@ client.login(config.discordToken)
 			messageCleanup(channel, logger);
 		});
 
+		// Error handling so I can work on the errors better
+		process.on('uncaughtException', err => {
+			// Send the error code to the bot commands channel
+			commandsChannels.forEach(channel => {
+				channel.send(err);
+			})
+		});
+
 	}).catch(error => {
 		logger.fatal(`Failed to login:\n${error}`);
 	});
