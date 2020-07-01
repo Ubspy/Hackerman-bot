@@ -13,17 +13,20 @@ exports.run = (message, args, logger) => {
     }
     else // Now we know that the bot is connected and playing stuff, so we'll force it to end
     {
-        // Gets the dispatcher
-        const dispatcher = client.voice.connections.first().dispatcher;
+        // Gets the voice connection
+        const connection = client.voice.connections.first();
 
-        if(dispatcher)
+        if(connection.dispatcher)
         {
             // Clears the queue of songs
             clearQueue();
 
-            // Tells it to stop if there's a dispatcher running
-            // We don't disconnect from vc afterwards because the dispatcher is set to trigger a voice disconnect on end IF there's no queue
-            dispatcher.end();
+            // Tells it to stop if there's a dispatcher running and then disconnect
+            connection.dispatcher.end();
+            connection.disconnect();
+
+            // We also clear the activity
+            client.user.setActivity("");
 
             // Logs the stoping of vibes
             message.reply(`Stopping vibes...`);
@@ -33,7 +36,7 @@ exports.run = (message, args, logger) => {
         {
             // Since there's a chance that the dispatcher stopped and the bot remained in a voice channel
             // if there's no current dispatcher then we'll just disconnect from voice
-            client.voice.connections.first().disconnect();
+            connection.disconnect();
             message.reply(`Looks like I was already done vibing... I don't know how this happened`);
             logger.info(`Disconnected from voice channel`);
         }

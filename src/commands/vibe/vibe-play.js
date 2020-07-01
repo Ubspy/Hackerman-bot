@@ -194,7 +194,7 @@ playSong = (song, connection, message, logger, newPlay = false) => {
     });
 
     // When the file is done playing
-    dispatcher.on("end", end => {
+    dispatcher.on("finish", finish => {
         logger.info(`Finished audio from ${song.videoUrl}`);
 
         // When the song is done we'll remove it from the queue (it'll be the first song in the queue)
