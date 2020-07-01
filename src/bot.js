@@ -138,8 +138,8 @@ client.login(config.discordToken)
 		// Outputs debug for when the bot has connected
 		logger.info("Connected as " + client.user.username);
 
-		var annoucementChannels = client.channels.filter(channel => channel.name == "announcements");
-		var commandsChannels = client.channels.filter(channel => channel.name == "bot-commands");
+		var annoucementChannels = client.channels.cache.filter(channel => channel.name == "announcements");
+		var commandsChannels = client.channels.cache.filter(channel => channel.name == "bot-commands");
 
 		annoucementChannels.forEach(channel => {
 			saleNotifier(channel, logger);
