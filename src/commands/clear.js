@@ -4,37 +4,29 @@ exports.desc = "Clears the bot-commands channel for convenience";
 exports.args = [];
 
 exports.run = (message, args, logger) => {
-    //Gets all messages in the bot-commands channel
-    message.channel.fetchMessages({limit:100}).then(messages => {
-        // Calls recursive function
-        bulkDeleteMessages(messages, messages.first().channel, logger);
-        logger.info("Clearing bot-commands channel");
-    }).catch((error) => {
-        // If something goes wrong, log it
-        logger.fatal(`Failed to clear chat:\n${error}`);
-    });
-};
+    logger.info("Clearing bot-commands channel");
 
-bulkDeleteMessages = (messages, channel, logger) => {
+    // We first fetch all the messages in the channel
+    message.channel.messages.fetch().then(messages => {
+        // We then bulk delete all those messages, this only works for messages less than 2 weeks old
+        // The true argument makes it so messages older than 2 weeks stay and it doesn't cause a giant crash
+        message.channel.bulkDelete(messages, true).then(messages => {
+            // Incase there are any messages left that were older than 2 weeks, we delete them the lame way
+            if(messages.array.length > 0)
+            {
+                // Loop through all of them and delete
+                for(var i = 0; i < messages.array.length; i++)
+                {
+                    messages.array[i].delete();
+                }
+            }
 
-    // Bulk deletes the messages we passed in
-    channel.bulkDelete(messages).then(() => {
-        //Gets all messages in the bot-commands channel
-        channel.fetchMessages({limit:100}).then(messages => {
-            // If there are messages left, keep deleting
-            if(messages.size > 0)
-            {
-                // Recursively calls the function to delete the remaining messages
-                bulkDeleteMessages(messages, channel, logger);
-            }
-            else
-            {
-                //Sends a message saying that it's done clearing
-                channel.send("Chat log has been cleared!");
-            }
-        }).catch((error) => {
-            // If something goes wrong, log it
-            logger.error(`Failed to roll dice:\n${error}`);
+            // Send a temp message saying it's done
+            message.channel.send(`Chat log has been cleared!`).then(message => {
+                setTimeout(() => {
+                    message.delete();
+                }, 3000);
+            });
         });
     });
-}
+};
