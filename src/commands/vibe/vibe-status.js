@@ -7,14 +7,14 @@ exports.args = [];
 
 exports.run = (message, args, logger) => {
     // Checks for a voice connection so we don't rause a null pointer (yes I know it's not Java but shut)
-    if(client.voiceConnections.first())
+    if(client.voice.connections.first())
     {
         // Get info from the current song
         var currentSong = vibe.getSongFromQueue(0);
 
         // Get the duration the dispatcher has been playing
         // The geniuses at discord.js made this return milliseconds so we gotta convert it to regular seconds
-        var timeElapsed = Math.floor(client.voiceConnections.first().dispatcher.time / 1000);
+        var timeElapsed = Math.floor(client.voice.connections.first().dispatcher.time / 1000);
 
         // Get the number of hours, minutes and remaining seconds in a video
         var hours = Math.floor(timeElapsed / 3600);

@@ -7,14 +7,14 @@ exports.args = [];
 
 exports.run = (message, args, logger) => {
     // If there's no current voice connections
-    if(client.voiceConnections.size == 0)
+    if(client.voice.connections.size == 0)
     {
         message.reply("I'm not currently vibing!");
     }
     else // Now we know that the bot is connected and playing stuff, so we'll force it to end
     {
         // Gets the dispatcher
-        const dispatcher = client.voiceConnections.first().dispatcher;
+        const dispatcher = client.voice.connections.first().dispatcher;
 
         if(dispatcher)
         {
@@ -33,7 +33,7 @@ exports.run = (message, args, logger) => {
         {
             // Since there's a chance that the dispatcher stopped and the bot remained in a voice channel
             // if there's no current dispatcher then we'll just disconnect from voice
-            client.voiceConnections.first().disconnect();
+            client.voice.connections.first().disconnect();
             message.reply(`Looks like I was already done vibing... I don't know how this happened`);
             logger.info(`Disconnected from voice channel`);
         }

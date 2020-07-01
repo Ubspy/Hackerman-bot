@@ -10,7 +10,7 @@ exports.run = (message, args, logger) => {
     {
         message.reply(`You didn't specify a song to remove!`);
     }
-    else if(client.voiceConnections.first()) // Checks for a voice connection so we don't rause a null pointer (yes I know it's not Java but shut)
+    else if(client.voice.connections.first()) // Checks for a voice connection so we don't rause a null pointer (yes I know it's not Java but shut)
     {
         // If there IS a voice connection that means we have a queue to mess with
         // We'll grab the index from the arg array

@@ -15,10 +15,10 @@ exports.run = (message, args, logger) => {
     if(args.length < 1)
     {
         // We're going to check and see if the bot is connected to any voice channels
-        if(client.voiceConnections.first())
+        if(client.voice.connections.first())
         {
             // If it is then we'll look for a dispatcher to resume
-            const dispatcher = client.voiceConnections.first().dispatcher;
+            const dispatcher = client.voice.connections.first().dispatcher;
 
             if(dispatcher)
             {
@@ -30,7 +30,7 @@ exports.run = (message, args, logger) => {
             else
             {
                 // If there's no dispatcher but they tried to play something
-                client.voiceConnections.first().disconnect();
+                client.voice.connections.first().disconnect();
                 logger.info(`Disconnected form voice, user tried to resume but no dispatcher was found`);
                 message.reply(`There was nothing to resume, so I disconnected from voice \nTry specifying a song to play`);
             }
@@ -55,7 +55,7 @@ exports.run = (message, args, logger) => {
         };
 
         // This gets the voice channel the user is connected to
-        userChannel = message.member.voiceChannel;
+        userChannel = message.member.voice.channel;
 
         if(userChannel)
         {
@@ -112,7 +112,7 @@ exports.run = (message, args, logger) => {
                     vibe.addSongToQueue(song, logger);
 
                     // If there's currently anything playing, we'll add it to the queue instead of trying to play it
-                    if(client.voiceConnections.size > 0)
+                    if(client.voice.connections.size > 0)
                     {
                         // Notifies the user that we're adding it to the queue instead of playing it
                         message.reply(`Added ${details.title} by ${details.author} - ${time} to queue\n${videoUrl}`);
@@ -171,7 +171,7 @@ fetchVideoID = (options, index, message) => {
 // Here we will have a recusrive function for playing a song
 // We have the default parameter of a new play as false, but if specified otherwise then we'll deal with it accordingly
 playSong = (song, connection, message, logger, newPlay = false) => {
-    const dispatcher = connection.playStream(song.stream);
+    const dispatcher = connection.play(song.stream);
 
     dispatcher.on("start", () => {
         logger.info(`Started audio from ${song.videoUrl}`);
@@ -199,6 +199,8 @@ playSong = (song, connection, message, logger, newPlay = false) => {
 
         // When the song is done we'll remove it from the queue (it'll be the first song in the queue)
         vibe.removeSongFromQueue(0);
+
+        console.log(vibe.getQueueLength());
 
         // When we end the current song we wanna see if there's another song to play
         if(vibe.getQueueLength() > 0)

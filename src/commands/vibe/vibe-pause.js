@@ -6,14 +6,14 @@ exports.args = [];
 
 exports.run = (message, args, logger) => {
     // If there's no current voice connections
-    if(client.voiceConnections.size == 0)
+    if(client.voice.connections.size == 0)
     {
         message.reply("I'm not currently vibing!");
     }
     else // Now we know that the bot is connected so we can look for the dispatcher
     {
         // Gets the dispatcher
-        const dispatcher = client.voiceConnections.first().dispatcher;
+        const dispatcher = client.voice.connections.first().dispatcher;
 
         if(dispatcher)
         {
@@ -24,7 +24,7 @@ exports.run = (message, args, logger) => {
         }
         else
         {
-            client.voiceConnections.first().disconnect();
+            client.voice.connections.first().disconnect();
             message.reply(`There was nothing to unpause, so I'm disconnecting for safety`);
             logger.info(`Disconnected form voice, user tried to pause but no dispatcher was found`);
         }

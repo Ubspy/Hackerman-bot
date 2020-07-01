@@ -6,10 +6,10 @@ exports.args = [];
 
 exports.run = (message, args, logger) => {
     // Checks for a voice connection so we don't rause a null pointer (yes I know it's not Java but shut)
-    if(client.voiceConnections.first())
+    if(client.voice.connections.first())
     {
         // If there IS one then we can end the dispatcher which will trigger the next song
-        client.voiceConnections.first().dispatcher.end();
+        client.voice.connections.first().dispatcher.end();
 
         logger.info(`Skipped playing song`);
     }
