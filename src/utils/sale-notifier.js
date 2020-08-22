@@ -13,8 +13,10 @@ module.exports = (announcementChannel, logger) => {
 
     // Job that'll run everyday at 6 pm on machine's localtime
     var job = schedule.scheduleJob("0 18 * * *", () => {
-        console.log("ZOINKS");
-        announcementMessage = ""; // Initial blank announcement message
+        // Initial blank announcement message
+        var announcementMessage = "";
+
+        var responseCount = 0;
 
         wishlist.games.forEach(game => {
             request({
@@ -33,7 +35,7 @@ module.exports = (announcementChannel, logger) => {
                 else if(data.price_overview.discount_percent > 0 && !game.onSale) // Checks if game is on sale
                 {
                     // Adds game to announcement message
-                    announcementMessage += `${game.name} is ${data.price_overview.discount_percent}% off!. It's on sale from ${formatter.format(data.price_overview.initial/100)} to ${formatter.format(data.price_overview.final/100)}\n${game.link}\n\n\n`;
+                    announcementMessage += (`${game.name} is ${data.price_overview.discount_percent}% off!. It's on sale from ${formatter.format(data.price_overview.initial/100)} to ${formatter.format(data.price_overview.final/100)}\n${game.link}\n\n\n`);
 
                     // Changes game's sale state to true and writes to the file
                     game.onSale = true;
@@ -49,13 +51,21 @@ module.exports = (announcementChannel, logger) => {
 
                     logger.info(`${game.name} is no longer on sale`);
                 }
-            });
 
-            // At the end we'll check the message str
-            if(announcementMessage != "")
-            {
-                announcementChannel.send(announcementMessage);
-            }
+                // Because javascript sucks we need to send the message in this callback
+                responseCount++;
+
+                if(responseCount == wishlist.games.length)
+                {
+                    if(announcementMessage != "")
+                    {
+                        announcementChannel.send(announcementMessage);
+                    }
+                }
+            });
         });
+
+        // At the end we'll check the message str
+        
     });
 };

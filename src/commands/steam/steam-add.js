@@ -1,9 +1,9 @@
 const fs = require('fs');
 const {google} = require('googleapis');
 const search = google.customsearch('v1');
+const request = require("request");
 const config = require('../../../config/config.json'); // Goes 3 folders back to get config file
 const wishlist = require('../../../config/wishlist.json');
-const request = require("request");
 
 exports.name = "add";
 exports.desc = "Add a steam game to the wishlist of games";
@@ -18,7 +18,7 @@ exports.run = async (message, args, logger) => {
     // q: search query
     // auth: api key
     const options = {
-        cx: config.googleSearchEngineID,
+        cx: config.googleSearchEngineIDs.steam,
         q: `${gameToSearch}`, // This bit removes the franchise pages from steam, because if you search like "fallout" it gives you the fallout franchise page
         auth: config.googleToken
     };

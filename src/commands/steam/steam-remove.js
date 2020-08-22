@@ -17,8 +17,8 @@ exports.run = async (message, args, logger) => {
     // q: search query
     // auth: api key
     const options = {
-        cx: config.googleSearchEngineID,
-        q: `${gameToSearch}`, // This bit removes the franchise pages from steam, because if you search like "fallout" it gives you the fallout franchise page
+        cx: config.googleSearchEngineIDs.steam,
+        q: `${gameToSearch}`,
         auth: config.googleToken
     };
 
@@ -52,8 +52,6 @@ exports.run = async (message, args, logger) => {
     }
     else
     {
-        steam.getGameDetails(gameID).then(details => {
-            message.reply(`${details.name} is not on the wishlist\n${link}`);
-        });
+        message.reply(`could not find ${gameToSearch} on the wishlist\n${link}`);
     }
 };

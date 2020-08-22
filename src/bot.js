@@ -138,12 +138,30 @@ client.login(config.discordToken)
 		// Outputs debug for when the bot has connected
 		logger.info("Connected as " + client.user.username);
 
+<<<<<<< HEAD
 		var annoucementChannels = client.channels.fetch(config["announcement-channel-id"]);
 		var commandsChannels = client.channels.fetch(config["bot-commands-channel-id"]);
+=======
+		var annoucementChannels = client.channels.cache.filter(channel => channel.name == "announcements");
+		var commandsChannels = client.channels.cache.filter(channel => channel.name == "bot-commands");
+>>>>>>> vibe
 
 		saleNotifier(annoucementChannels, logger);
 		messageCleanup(commandsChannels, logger);
 
+		// Error handling so I can work on the errors better
+		process.on('uncaughtException', err => {
+			// Send the error code to the bot commands channel
+			commandsChannels.forEach(channel => {
+				channel.send(err);
+			})
+		});
+
 	}).catch(error => {
 		logger.fatal(`Failed to login:\n${error}`);
 	});
+
+// Method for getting the discord client
+exports.getClient = () => {
+	return client;
+}
