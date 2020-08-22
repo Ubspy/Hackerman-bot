@@ -2,5 +2,6 @@
     "discordToken" : "<discord api token here>",
     "googleToken" : "<google api token here>",
     "googleSearchEngineID" : "<google cse id here>",
+    "dj-role": "<dj-role-name>",
     "prefix" : "!"
 }
