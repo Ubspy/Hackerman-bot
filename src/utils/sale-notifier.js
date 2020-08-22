@@ -12,7 +12,8 @@ module.exports = (announcementChannel, logger) => {
     });
 
     // Job that'll run everyday at 6 pm on machine's localtime
-    var job = schedule.scheduleJob("33 13 * * *", () => {
+    var job = schedule.scheduleJob("0 18 * * *", () => {
+        console.log("ZOINKS");
         announcementMessage = ""; // Initial blank announcement message
 
         wishlist.games.forEach(game => {

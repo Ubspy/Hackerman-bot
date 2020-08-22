@@ -138,16 +138,11 @@ client.login(config.discordToken)
 		// Outputs debug for when the bot has connected
 		logger.info("Connected as " + client.user.username);
 
-		var annoucementChannels = client.channels.filter(channel => channel.name == "announcements");
-		var commandsChannels = client.channels.filter(channel => channel.name == "bot-commands");
+		var annoucementChannels = client.channels.fetch(config["announcement-channel-id"]);
+		var commandsChannels = client.channels.fetch(config["bot-commands-channel-id"]);
 
-		annoucementChannels.forEach(channel => {
-			saleNotifier(channel, logger);
-		});
-
-		commandsChannels.forEach(channel => {
-			messageCleanup(channel, logger);
-		});
+		saleNotifier(annoucementChannels, logger);
+		messageCleanup(commandsChannels, logger);
 
 	}).catch(error => {
 		logger.fatal(`Failed to login:\n${error}`);
