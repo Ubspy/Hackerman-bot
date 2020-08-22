@@ -138,13 +138,8 @@ client.login(config.discordToken)
 		// Outputs debug for when the bot has connected
 		logger.info("Connected as " + client.user.username);
 
-<<<<<<< HEAD
 		var annoucementChannels = client.channels.fetch(config["announcement-channel-id"]);
 		var commandsChannels = client.channels.fetch(config["bot-commands-channel-id"]);
-=======
-		var annoucementChannels = client.channels.cache.filter(channel => channel.name == "announcements");
-		var commandsChannels = client.channels.cache.filter(channel => channel.name == "bot-commands");
->>>>>>> vibe
 
 		saleNotifier(annoucementChannels, logger);
 		messageCleanup(commandsChannels, logger);
