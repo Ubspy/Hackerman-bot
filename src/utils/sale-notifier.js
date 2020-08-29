@@ -12,7 +12,7 @@ module.exports = (announcementChannel, logger) => {
     });
 
     // Job that'll run everyday at 6 pm on machine's localtime
-    var job = schedule.scheduleJob("0 * * * *", () => {
+    var job = schedule.scheduleJob("* 21 * * *", () => {
         // Initial blank announcement message
         var announcementMessage = "";
 
@@ -35,7 +35,7 @@ module.exports = (announcementChannel, logger) => {
                 else if(data.price_overview.discount_percent > 0 && !game.onSale) // Checks if game is on sale
                 {
                     // Adds game to announcement message
-                    announcementMessage += (`${game.name} is ${data.price_overview.discount_percent}% off!. It's on sale from ${formatter.format(data.price_overview.initial/100)} to ${formatter.format(data.price_overview.final/100)}\n${game.link}\n\n\n`);
+                    announcementMessage += (`${game.name} is ${data.price_overview.discount_percent}% off!. It's on sale from ${formatter.format(data.price_overview.initial/100)} to ${formatter.format(data.price_overview.final/100)}\n${game.link}\n`);
 
                     // Changes game's sale state to true and writes to the file
                     game.onSale = true;
