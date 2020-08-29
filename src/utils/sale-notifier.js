@@ -12,7 +12,7 @@ module.exports = (announcementChannel, logger) => {
     });
 
     // Job that'll run everyday at 6 pm on machine's localtime
-    var job = schedule.scheduleJob("0 18 * * *", () => {
+    var job = schedule.scheduleJob("0 * * * *", () => {
         // Initial blank announcement message
         var announcementMessage = "";
 

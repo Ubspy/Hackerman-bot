@@ -138,19 +138,29 @@ client.login(config.discordToken)
 		// Outputs debug for when the bot has connected
 		logger.info("Connected as " + client.user.username);
 
-		var annoucementChannels = client.channels.fetch(config["announcement-channel-id"]);
-		var commandsChannels = client.channels.fetch(config["bot-commands-channel-id"]);
-
-		saleNotifier(annoucementChannels, logger);
-		messageCleanup(commandsChannels, logger);
-
-		// Error handling so I can work on the errors better
-		process.on('uncaughtException', err => {
-			// Send the error code to the bot commands channel
-			commandsChannels.forEach(channel => {
-				channel.send(err);
-			})
+		// Here we fetch the announcement channel
+		client.channels.fetch(config["announcement-channel-id"]).then(annoucementChannel => {
+			// Once we get it, we tell it to run the sale notifier utility
+			saleNotifier(annoucementChannel, logger);
+		}).catch(error => {
+			// If we fail, then we log a fatal error
+			logger.fatal(`Failed to fetch announcement channel with id ${config["annoucement-channel-id"]}\n${error}`);
 		});
+
+
+		client.channels.fetch(config["bot-commands-channel-id"]).then(commandsChannel => {
+			// Once we get it, we tell it to run the message cleanup utility
+			messageCleanup(commandsChannel, logger);
+
+			// Error handling so I can work on the errors better
+			process.on('uncaughtException', err => {
+				// Send the error code to the bot commands channel
+				commandsChannel.send(err);
+			});
+		}).catch(error => {
+			// If we fail, then we log a fatal error
+			logger.fatal(`Failed to fetch bot-commands channel with id ${config["bot-commands-channel-id"]}\n${error}`);
+		});		
 
 	}).catch(error => {
 		logger.fatal(`Failed to login:\n${error}`);
