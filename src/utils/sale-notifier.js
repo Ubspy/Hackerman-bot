@@ -12,13 +12,14 @@ module.exports = (announcementChannel, logger) => {
     });
 
     // Job that'll run everyday at 6 pm on machine's localtime
-    var job = schedule.scheduleJob("* 21 * * *", () => {
+    var job = schedule.scheduleJob("* */1 * * *", () => {
+
         // Initial blank announcement message
         var announcementMessage = "";
 
         var responseCount = 0;
 
-        wishlist.games.forEach(game => {
+        wishlist.games.every(game => {
             request({
                 url: `https://store.steampowered.com/api/appdetails?appids=${game.id}`,
                 json: true
@@ -26,11 +27,15 @@ module.exports = (announcementChannel, logger) => {
             (error, response, body) => {
                 var data = body[game.id].data;
 
-                if(error)
+                if(error || !data)
                 {
+
                     // This happens if the page couldn't be reached
                     logger.error(`Something went horribly wrong when looking for info on ${game.name} with id ${game.id}: ` + error);
                     message.reply("Something went horribly wrong, please check the log files");
+
+                    // Will break out of the loop if it fails
+                    return false;
                 }
                 else if(data.price_overview.discount_percent > 0 && !game.onSale) // Checks if game is on sale
                 {
@@ -57,15 +62,13 @@ module.exports = (announcementChannel, logger) => {
 
                 if(responseCount == wishlist.games.length)
                 {
+                    console.log(`message:, ${announcementMessage}`);
                     if(announcementMessage != "")
                     {
                         announcementChannel.send(announcementMessage);
                     }
                 }
             });
-        });
-
-        // At the end we'll check the message str
-        
+        });        
     });
 };
