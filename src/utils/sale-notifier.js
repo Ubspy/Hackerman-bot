@@ -11,15 +11,15 @@ module.exports = (announcementChannel, logger) => {
         currency: 'USD',
     });
 
-    // Job that'll run everyday at 6 pm on machine's localtime
-    var job = schedule.scheduleJob("* */1 * * *", () => {
+    // Job that'll run every hour
+    var job = schedule.scheduleJob("0 */1 * * *", () => {
 
         // Initial blank announcement message
         var announcementMessage = "";
 
         var responseCount = 0;
 
-        wishlist.games.every(game => {
+        wishlist.games.forEach(game => {
             request({
                 url: `https://store.steampowered.com/api/appdetails?appids=${game.id}`,
                 json: true
@@ -27,26 +27,30 @@ module.exports = (announcementChannel, logger) => {
             (error, response, body) => {
                 var data = body[game.id].data;
 
-                if(error || !data)
+                // First we're going to check and make sure these price variables exist, if not we'll send a message notifying the server
+                // This is first because if this returns true the other else ifs shouldn't even be evaluated
+                if(data.price_overview === undefined)
                 {
-
+                    announcementChannel.send(`Could not get the price data for the game ${game.name}, with id ${game.id} and url ${game.link}\nPlease make sure this is a proper game!`).catch(error => {
+                        logger.error(error);
+                    });
+                }
+                else if(error || !data)
+                {
                     // This happens if the page couldn't be reached
                     logger.error(`Something went horribly wrong when looking for info on ${game.name} with id ${game.id}: ` + error);
                     message.reply("Something went horribly wrong, please check the log files");
-
-                    // Will break out of the loop if it fails
-                    return false;
                 }
-                else if(data.price_overview.discount_percent > 0 && !game.onSale) // Checks if game is on sale
+                else if(data.price_overview.discount_percent > 0 && !game.onSale)
                 {
                     // Adds game to announcement message
-                    announcementMessage += (`${game.name} is ${data.price_overview.discount_percent}% off!. It's on sale from ${formatter.format(data.price_overview.initial/100)} to ${formatter.format(data.price_overview.final/100)}\n${game.link}\n`);
+                    announcementMessage += (`${game.name} is ${data.price_overview.discount_percent}% off!. It's on sale from ${formatter.format(data.price_overview.initial / 100)} to ${formatter.format(data.price_overview.final / 100)} ${game.link}\n`);
 
                     // Changes game's sale state to true and writes to the file
                     game.onSale = true;
                     fs.writeFileSync(`${__dirname}/../../config/wishlist.json`, JSON.stringify(wishlist));
 
-                    logger.info(`Notified users that ${game.name} is on sale`);
+                    logger.info(`Updated games file, ${game.name} is on sale`);
                 }
                 else if(data.price_overview.discount_percent == 0 && game.onSale)
                 {
@@ -54,21 +58,30 @@ module.exports = (announcementChannel, logger) => {
                     game.onSale = false;
                     fs.writeFileSync(`${__dirname}/../../config/wishlist.json`, JSON.stringify(wishlist));
 
-                    logger.info(`${game.name} is no longer on sale`);
+                    logger.info(`Updated the games file, ${game.name} is no longer on sale`);
                 }
 
-                // Because javascript sucks we need to send the message in this callback
+                // Keeping track of the number of times this loop as run
                 responseCount++;
 
+                // Foreach is asynchronous, so we can't just have this outside of the loop
                 if(responseCount == wishlist.games.length)
                 {
-                    console.log(`message:, ${announcementMessage}`);
                     if(announcementMessage != "")
                     {
-                        announcementChannel.send(announcementMessage);
+                        // As long as there's an announcement message, we send it
+                        announcementChannel.send(announcementMessage).then(message => {
+                            // Here we delete the embeds on the message, and add a log message
+                            message.suppressEmbeds();
+                            logger.info(`Notified users about game sales!`); // TODO: custom, smaller embed
+                        }).catch(error => {
+                            // Error catching
+                            logger.error(error);
+                        });
+                        
                     }
                 }
             });
-        });        
+        });           
     });
 };

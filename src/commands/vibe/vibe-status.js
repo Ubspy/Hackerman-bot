@@ -56,11 +56,18 @@ exports.run = (message, args, logger) => {
             progressBar += (i < songProgress) ? ":green_square: " : ":red_square: ";
         }
 
-        message.reply(`Now playing: "${currentSong.name}" by ${currentSong.author} \n${timeElapsedStr}/${currentSong.durationStr}: ${progressBar} \n${currentSong.videoUrl}`);
+        message.reply(`Now playing: "${currentSong.name}" by ${currentSong.author} \n${timeElapsedStr}/${currentSong.durationStr}: ${progressBar} \n${currentSong.videoUrl}`).then(message => {
+            // Get rid of the embeds from the message
+            message.suppressEmbeds();
+        }).catch(error => {
+            logger.error(`Failed to send song status\n${error}`);
+        });
     }
     else
     {
         // If there's no voice connection then we yell at the user
-        message.reply(`There isn't anything playing!`);
+        message.reply(`There isn't anything playing!`).catch(error => {
+            logger.error(`Failed to say there there were no songs playing\n${error}`);
+        });;
     }
 }

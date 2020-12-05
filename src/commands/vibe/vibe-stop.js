@@ -14,7 +14,9 @@ exports.run = (message, args, logger) => {
         // If there's no current voice connections
         if(client.voice.connections.size == 0)
         {
-            message.reply("I'm not currently vibing!");
+            message.reply("I'm not currently vibing!").catch(error => {
+                logger.error(`Failed to say there there were no songs playing\n${error}`);
+            });;
         }
         else // Now we know that the bot is connected and playing stuff, so we'll force it to end
         {
@@ -34,7 +36,10 @@ exports.run = (message, args, logger) => {
                 client.user.setActivity("");
 
                 // Logs the stoping of vibes
-                message.reply(`Stopping vibes...`);
+                message.reply(`Stopping vibes...`).catch(error => {
+                    logger.error(`Failed to notify I stopped playing songs\n${error}`);
+                });
+
                 logger.info(`Ended dispatcher`);
             }
             else
@@ -42,7 +47,11 @@ exports.run = (message, args, logger) => {
                 // Since there's a chance that the dispatcher stopped and the bot remained in a voice channel
                 // if there's no current dispatcher then we'll just disconnect from voice
                 connection.disconnect();
-                message.reply(`Looks like I was already done vibing... I don't know how this happened`);
+
+                message.reply(`Looks like I was already done vibing... I don't know how this happened`).catch(error => {
+                    logger.error(`Failed to say that something funny happened\n${error}`);
+                });
+
                 logger.info(`Disconnected from voice channel`);
             }
         }

@@ -13,7 +13,9 @@ exports.run = (message, args, logger) => {
     {
         if(args.length < 1) // If they don't provide a song to remove we punish them
         {
-            message.reply(`You didn't specify a song to remove!`);
+            message.reply(`You didn't specify a song to remove!`).catch(error => {
+                logger.error(`Failed to say there there was no specified song to remove\n${error}`);
+            });;
         }
         else if(client.voice.connections.first()) // Checks for a voice connection so we don't rause a null pointer (yes I know it's not Java but shut)
         {
@@ -34,14 +36,19 @@ exports.run = (message, args, logger) => {
                 vibe.removeSongFromQueue(songToRemove);
 
                 // Notifies the user and logs it
-                message.reply(`Removed song "${songRemoved.name}" by ${songRemoved.author} from the queue`);
+                message.reply(`Removed song "${songRemoved.name}" by ${songRemoved.author} from the queue`).catch(error => {
+                    logger.error(`Failed to notify that I removed a song\n${error}`);
+                });
+                
                 logger.info(`Removed song "${songRemoved.name}" by ${songRemoved.author} from the queue`);
             }
         }
         else
         {
             // If there's no voice connection then we yell at the user
-            message.reply(`There isn't anything playing!`);
+            message.reply(`There isn't anything playing!`).catch(error => {
+                logger.error(`Failed to say there there were no songs playing\n${error}`);
+            });
         }
     }
     else

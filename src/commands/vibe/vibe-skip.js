@@ -24,7 +24,9 @@ exports.run = (message, args, logger) => {
         else
         {
             // If there's no voice connection then we yell at the user
-            message.reply(`There isn't anything playing!`);
+            message.reply(`There isn't anything playing!`).catch(error => {
+                logger.error(`Failed say I'm skipping a song\n${error}`);
+            });;
         }
     }
     else

@@ -189,11 +189,21 @@ playSong = (song, connection, message, logger, newPlay = false) => {
         // If it's not continuing the queue then we'll use a reply, otherwise we'll just send a normal message
         if(newPlay)
         {
-            message.reply(`Now playing "${song.name}" by ${song.author} - ${song.durationStr}\n${song.videoUrl}`);
+            message.reply(`Now playing "${song.name}" by ${song.author} - ${song.durationStr}\n${song.videoUrl}`).then(message => {
+                // Get rid of the embeds from the message
+                message.suppressEmbeds(); // TODO: custom, smaller embed 
+            }).catch(error => {
+                logger.error(`Failed to notify that I started playing a song\n${error}`);
+            });
         }
         else
         {
-            message.channel.send(`Now playing "${song.name}" by ${song.author} - ${song.durationStr}\n${song.videoUrl}`);
+            message.channel.send(`Now playing "${song.name}" by ${song.author} - ${song.durationStr}\n${song.videoUrl}`).then(message => {
+                // Get rid of the embeds from the message
+                message.suppressEmbeds(); // TODO: custom, smaller embed
+            }).catch(error => {
+                logger.error(`Failed to notify that I started playing a song\n${error}`);
+            });
         }
 
         // We will also set the bots activity status

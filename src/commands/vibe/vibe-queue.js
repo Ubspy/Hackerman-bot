@@ -37,6 +37,6 @@ exports.run = (message, args, logger) => {
 
     // Send the message
     message.reply(messageString).catch(error => {
-        logger.error(error);
+        logger.error(`Failed to send song queue\n${error}`);
     });
 };
