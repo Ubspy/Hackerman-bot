@@ -1,3 +1,10 @@
+/**
+ * @file bot.js
+ * @author Ubspy
+ * @desc
+   The main file :)
+**/
+
 const Discord = require("discord.js");
 const fs = require("fs");
 const config = require("../config/config.json"); // You'll need to change the example config into an actual one if you fork or clone the repo
