@@ -1,6 +1,7 @@
 # Config
 config.json
 wishlist.json
+truth-counter.json
 
 # Audio files
 audio/**
