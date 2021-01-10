@@ -5,6 +5,12 @@ const log4js = require('log4js');
 const client = new Discord.Client();
 var commands = new Map();
 
+// The utils won't be loaded like that because there's no good way to identify them, they also won't be as many
+const reddit = require("./utils/reddit.js");
+const saleNotifier = require("./utils/sale-notifier.js");
+const messageCleanup = require('./utils/command-channel-clearer.js');
+const truthCounter = require("./utils/truth-counter.js");
+
 // Sets logging output file as well as in console
 // TODO: Make it runnable without console output (so on further look, this is really hard to do, this is a low priority TODO)
 log4js.configure({
@@ -68,18 +74,13 @@ fs.readdirSync(__dirname + "/commands")
 		}
 	});
 
-// The utils won't be loaded like that because there's no good way to identify them, they also won't be as many
-const reddit = require("./utils/reddit.js");
-const saleNotifier = require("./utils/sale-notifier.js");
-const messageCleanup = require('./utils/command-channel-clearer.js')
-
 // Processes sent message
 client.on("message", message => {
 	// Exits the function is the message is from a bot, this avoids infinite loops
 	if(message.author.bot) return;
 
 	// Sees if the sent message starts with the command prefix, and if it's in a channel called 'bot-commands'
-	if(message.content.startsWith(config.prefix) && message.channel.name == 'bot-commands')
+	if(message.content.startsWith(config.prefix) && message.channel.id == config["bot-commands-channel-id"])
 	{
 		// Gets arguments from message by space seperation
 		var args = message.content
@@ -125,6 +126,7 @@ client.on("message", message => {
 			logger.fatal(`Failed to link subreddit from message ${message.content}:\n${error}`);
 		}
 	}
+	// else if(message.content.includes("+1") 
 
 	// Checks if message is "good bot"
 	if(message.content.toLocaleLowerCase().includes("good bot"))
@@ -137,6 +139,9 @@ client.login(config.discordToken)
 	.then(() => {
 		// Outputs debug for when the bot has connected
 		logger.info("Connected as " + client.user.username);
+
+		// running utilities
+		truthCounter(client, logger);
 
 		// Here we fetch the announcement channel
 		client.channels.fetch(config["announcement-channel-id"]).then(annoucementChannel => {			
