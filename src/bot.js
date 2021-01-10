@@ -4,13 +4,7 @@ const config = require("../config/config.json"); // You'll need to change the ex
 const log4js = require('log4js');
 const client = new Discord.Client();
 var commands = new Map();
-
-// The utils won't be loaded like that because there's no good way to identify them, they also won't be as many.
-// TODO: We should load these dynamically as we do with the commands.
-const reddit = require("./utils/reddit.js");
-const saleNotifier = require("./utils/sale-notifier.js");
-const messageCleanup = require('./utils/command-channel-clearer.js');
-const truthCounter = require("./utils/truth-counter.js");
+var utils = new Map();
 
 // Sets logging output file as well as in console
 // TODO: Make it runnable without console output (so on further look, this is really hard to do, this is a low priority TODO)
@@ -57,7 +51,7 @@ if(!fs.existsSync(`${__dirname}/../config/wishlist.json`))
 
 // We should also check for the truth-counter.json file
 // It doesn't come with the repo so if it doesn't exist in the file system on boot we will make it
-if(!fs.existsSync(`${__dirname}/../config/truth-counter.json`))
+if(!fs.existsSync(`${__dirname}/../config/truthCounter.json`))
 {
 	// This is blank json object that just holds the counter
 	var truthCounterJson = {
@@ -65,7 +59,7 @@ if(!fs.existsSync(`${__dirname}/../config/truth-counter.json`))
 	}
 
 	logger.info(`Creating truth-counter.json file`);
-	fs.writeFileSync(`${__dirname}/../config/truth-counter.json`, JSON.stringify(truthCounterJson));
+	fs.writeFileSync(`${__dirname}/../config/truthCounter.json`, JSON.stringify(truthCounterJson));
 }
 
 // readdirSync will return an array of each file in the commands folder
@@ -82,7 +76,26 @@ fs.readdirSync(__dirname + "/commands")
 			// Adds it to the hashmap with the key of the command name, and the value of the command
 			commands.set(command.name, command);
 		}
-		catch (error)
+		catch(error)
+		{
+			logger.error(`Failed to load ${file}:\n${error}`);
+		}
+	});
+
+
+fs.readdirSync(__dirname + "/utils")
+	.filter(file => file.endsWith(".js"))
+	.forEach(file => {
+		try
+		{
+			// Loads file into a variable
+			var util = require(`${__dirname}/utils/${file}`);
+			logger.info(`Loaded util: ${file}`);
+
+			// Add it to the hashmap like we did for the commands
+			utils.set(util.name, util);
+		}
+		catch(error)
 		{
 			logger.error(`Failed to load ${file}:\n${error}`);
 		}
@@ -127,21 +140,6 @@ client.on("message", message => {
 		}
 	}
 
-	// Checks for subreddit message (won't link the subreddit if there's already a link)
-	if(message.content.toLowerCase().includes("r/") && !message.content.toLowerCase().includes("https://"))
-	{
-		// Try catch because it will crash the bot if it fails
-		try
-		{
-			reddit(message, logger);
-		}
-		catch(error)
-		{
-			logger.fatal(`Failed to link subreddit from message ${message.content}:\n${error}`);
-		}
-	}
-	// else if(message.content.includes("+1") 
-
 	// Checks if message is "good bot"
 	if(message.content.toLocaleLowerCase().includes("good bot"))
 	{
@@ -154,33 +152,12 @@ client.login(config.discordToken)
 		// Outputs debug for when the bot has connected
 		logger.info("Connected as " + client.user.username);
 
-		// running utilities
-		truthCounter(client, logger);
-
-		// Here we fetch the announcement channel
-		client.channels.fetch(config.announcementChannelID).then(annoucementChannel => {			
-			// Once we get it, we tell it to run the sale notifier utility
-			saleNotifier(annoucementChannel, logger);
-		}).catch(error => {
-			// If we fail, then we log a fatal error
-			logger.fatal(`Failed to fetch announcement channel with id ${config.announcementChannelID}\n${error}`);
+		// Run every util giving it the logger, and the logged in client
+		utils.forEach(util => {
+			util(client, logger);
 		});
 
-		client.channels.fetch(config.botCommandsChannelID).then(commandsChannel => {
-			// Once we get it, we tell it to run the message cleanup utility
-			messageCleanup(commandsChannel, logger);
-
-			// Error handling so I can work on the errors better
-			process.on('uncaughtException', err => {
-				// Send the error code to the bot commands channel
-				logger.error(err);
-
-				// TODO: Send a message about this somehow
-			});
-		}).catch(error => {
-			// If we fail, then we log a fatal error
-			logger.fatal(`Failed to fetch bot-commands channel with id ${config.botCommandsChannelID}\n${error}`);
-		});		
+		
 
 	}).catch(error => {
 		logger.fatal(`Failed to login:\n${error}`);
