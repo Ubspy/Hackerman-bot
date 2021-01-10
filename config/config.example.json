@@ -2,8 +2,8 @@
     "discordToken" : "<discord api token here>",
     "googleToken" : "<google api token here>",
     "googleSearchEngineID" : "<google cse id here>",
-    "announcement-channel-id": "<announcement channel id here>",
-    "bot-commands-channel-id": "<bot commands channel id>",
-    "dj-role": "<dj-role-name>",
+    "announcementChannelID": "<announcement channel id here>",
+    "botCommandsChannelID": "<bot commands channel id>",
+    "djRole": "<dj-role-name>",
     "prefix" : "!"
 }

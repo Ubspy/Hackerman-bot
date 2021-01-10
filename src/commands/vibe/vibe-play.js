@@ -14,7 +14,7 @@ exports.args = ['file'];
 exports.run = (message, args, logger) => {
     // First thing we're going to check is if they have the proper role to control the bot
     // the find function loops through all the objects and checks the properties, so if there's a role with the same name as in the config, they can control the bot
-    if(message.member.roles.cache.find(role => role.name.toLowerCase() === config["dj-role"].toLowerCase()))
+    if(message.member.roles.cache.find(role => role.name.toLowerCase() === config.djRole.toLowerCase()))
     {
         if(args.length < 1)
         {

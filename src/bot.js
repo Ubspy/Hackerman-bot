@@ -139,15 +139,15 @@ client.login(config.discordToken)
 		logger.info("Connected as " + client.user.username);
 
 		// Here we fetch the announcement channel
-		client.channels.fetch(config["announcement-channel-id"]).then(annoucementChannel => {			
+		client.channels.fetch(config.announcementChannelID).then(annoucementChannel => {			
 			// Once we get it, we tell it to run the sale notifier utility
 			saleNotifier(annoucementChannel, logger);
 		}).catch(error => {
 			// If we fail, then we log a fatal error
-			logger.fatal(`Failed to fetch announcement channel with id ${config["annoucement-channel-id"]}\n${error}`);
+			logger.fatal(`Failed to fetch announcement channel with id ${config.announcementChannelID}\n${error}`);
 		});
 
-		client.channels.fetch(config["bot-commands-channel-id"]).then(commandsChannel => {
+		client.channels.fetch(config.botCommandsChannelID).then(commandsChannel => {
 			// Once we get it, we tell it to run the message cleanup utility
 			messageCleanup(commandsChannel, logger);
 
@@ -160,7 +160,7 @@ client.login(config.discordToken)
 			});
 		}).catch(error => {
 			// If we fail, then we log a fatal error
-			logger.fatal(`Failed to fetch bot-commands channel with id ${config["bot-commands-channel-id"]}\n${error}`);
+			logger.fatal(`Failed to fetch bot-commands channel with id ${config.botCommandsChannelID}\n${error}`);
 		});		
 
 	}).catch(error => {
