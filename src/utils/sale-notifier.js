@@ -14,6 +14,8 @@ module.exports = (announcementChannel, logger) => {
     // Job that'll run every hour
     var job = schedule.scheduleJob("0 */1 * * *", () => {
 
+        logger.info(`Checking for updated sale stats...`);
+
         // Initial blank announcement message
         var announcementMessage = "";
 
@@ -77,8 +79,11 @@ module.exports = (announcementChannel, logger) => {
                         }).catch(error => {
                             // Error catching
                             logger.error(error);
-                        });
-                        
+                        });  
+                    }
+                    else
+                    {
+                        logger.log(`No sales to update`);
                     }
                 }
             });
