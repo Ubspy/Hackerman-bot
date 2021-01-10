@@ -3,8 +3,8 @@
     "googleToken" : "<google api token here>",
     "googleSearchEngineID" : "<google cse id here>",
     "announcement-channel-id": "<announcement channel id here>",
-    "bot-commands-channel-id": "<bot commands channel id>",
-    "truth-counter-channel-id": "<truth counter channel id>",
+    "bot-commands-channel-id": "<bot commands channel id here>",
+    "truth-counter-channel-id": "<truth counter channel id here>",
     "dj-role": "<dj-role-name>",
     "prefix" : "!"
 }

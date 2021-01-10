@@ -20,9 +20,7 @@ module.exports = (client, logger) => {
     // Fetches the truth counter's quote channel id, and then checks messages
     client.channels.fetch(config['truth-counter-channel-id'])
         .then(truthCounterChannel => {
-
             client.on('message', message => {
-
                 if(message.content.includes('+1'))
                 {   // Initializes variable that is the id of the message being replied to.
                     var origMessageID = message.reference.messageID;
@@ -30,16 +28,12 @@ module.exports = (client, logger) => {
                     // Fetches the string message using the id, adds count to counter, sends out quote and count into the truth counter channel, rewrites count in the json.
                     message.channel.messages.fetch(origMessageID)
                         .then(fetchedMessage => {
-
                             truthCounter.currentCount++; // Only changes local object.
                             truthCounterChannel.send(`> ${fetchedMessage.content} \n<@${fetchedMessage.author.id}> \nTruth Counter: ${truthCounter.currentCount}`);
-                            fs.writeFileSync(`${__dirname}/../../config/truthCounter.json`, JSON.stringify(truthCounter)); // rewrites count in json.
-
-                        }).catch(error => {
-                            
+                            fs.writeFileSync(`${__dirname}/../../config/truthCounter.json`, JSON.stringify(truthCounter)); // Rewrites count in json.
+                        }).catch(error => {   
                             message.channel.send('Could not fetch message you replied to');
                             logger.error(`Could not fetch message you replied to \n${error}`);
-                            
                         });
                 }
             });

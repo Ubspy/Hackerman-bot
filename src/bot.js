@@ -5,7 +5,8 @@ const log4js = require('log4js');
 const client = new Discord.Client();
 var commands = new Map();
 
-// The utils won't be loaded like that because there's no good way to identify them, they also won't be as many
+// The utils won't be loaded like that because there's no good way to identify them, they also won't be as many.
+// TODO: We should load these dynamically as we do with the commands.
 const reddit = require("./utils/reddit.js");
 const saleNotifier = require("./utils/sale-notifier.js");
 const messageCleanup = require('./utils/command-channel-clearer.js');
