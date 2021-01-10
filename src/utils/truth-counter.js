@@ -2,7 +2,7 @@
  * @file truth-counter.js
  * @author Ubspy, josiezxh
  * @desc
-  Whenever '+1' is detected as a message, it will check if it is a reply.
+  Whenever '+1' is detected as a message, it will check if it is a reply, and add to the truth counter channel.
   If it isn't, then won't add to counter. If the '+1' doesn't work, check the
   logger.
  *
