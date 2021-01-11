@@ -114,7 +114,7 @@ client.on("message", message => {
 	if(message.author.bot) return;
 
 	// Sees if the sent message starts with the command prefix, and if it's in a channel called 'bot-commands'
-	if(message.content.startsWith(config.prefix) && message.channel.id == config["bot-commands-channel-id"])
+	if(message.content.startsWith(config.prefix) && message.channel.id == config.botCommandsChannelID)
 	{
 		// Gets arguments from message by space seperation
 		var args = message.content
