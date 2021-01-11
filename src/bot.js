@@ -164,8 +164,6 @@ client.login(config.discordToken)
 			util(client, logger);
 		});
 
-		
-
 	}).catch(error => {
 		logger.fatal(`Failed to login:\n${error}`);
 	});
