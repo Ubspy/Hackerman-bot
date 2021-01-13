@@ -6,9 +6,11 @@
   If it isn't, then won't add to counter. If the '+1' doesn't work, check the
   logger.
  *
- * @param {discord.js <Client>}, Message [Message object to work with]
- {@link} https://discord.js.org/#/docs/main/stable/class/Message
-*/
+ * @param {discord.js <Client>}, Client [Discord client object to work with]
+ {@link} https://discord.js.org/#/docs/main/stable/class/Client
+ * @param {log4js <Logger>}, Logger [The logger object that will write important data to the log files]
+ {@link} https://log4js-node.github.io/log4js-node/
+**/
 
 const fs = require('fs');
 const config = require('../../config/config.json'); // Goes 2 folders back to get config file.

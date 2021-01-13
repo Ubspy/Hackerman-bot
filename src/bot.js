@@ -1,3 +1,10 @@
+/**
+ * @file bot.js
+ * @author Ubspy
+ * @desc
+   The main file :)
+**/
+
 const Discord = require("discord.js");
 const fs = require("fs");
 const config = require("../config/config.json"); // You'll need to change the example config into an actual one if you fork or clone the repo
@@ -107,7 +114,7 @@ client.on("message", message => {
 	if(message.author.bot) return;
 
 	// Sees if the sent message starts with the command prefix, and if it's in a channel called 'bot-commands'
-	if(message.content.startsWith(config.prefix) && message.channel.id == config["bot-commands-channel-id"])
+	if(message.content.startsWith(config.prefix) && message.channel.id == config.botCommandsChannelID)
 	{
 		// Gets arguments from message by space seperation
 		var args = message.content
@@ -156,8 +163,6 @@ client.login(config.discordToken)
 		utils.forEach(util => {
 			util(client, logger);
 		});
-
-		
 
 	}).catch(error => {
 		logger.fatal(`Failed to login:\n${error}`);
