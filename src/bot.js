@@ -51,7 +51,7 @@ if(!fs.existsSync(`${__dirname}/../config/wishlist.json`))
 
 // We should also check for the truth-counter.json file
 // It doesn't come with the repo so if it doesn't exist in the file system on boot we will make it
-if(!fs.existsSync(`${__dirname}/../config/truthCounter.json`))
+if(!fs.existsSync(`${__dirname}/../config/truth-counter.json`))
 {
 	// This is blank json object that just holds the counter
 	var truthCounterJson = {
@@ -59,7 +59,7 @@ if(!fs.existsSync(`${__dirname}/../config/truthCounter.json`))
 	}
 
 	logger.info(`Creating truth-counter.json file`);
-	fs.writeFileSync(`${__dirname}/../config/truthCounter.json`, JSON.stringify(truthCounterJson));
+	fs.writeFileSync(`${__dirname}/../config/truth-counter.json`, JSON.stringify(truthCounterJson));
 }
 
 // readdirSync will return an array of each file in the commands folder

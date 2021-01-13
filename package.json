@@ -4,6 +4,7 @@
   "description": "General Use Discord Bot",
   "main": "Bot.js",
   "dependencies": {
+    "@types/node": "^14.14.20",
     "discord.js": "^12.5.1",
     "googleapis": "67.0.0",
     "log4js": "^6.3.0",
