@@ -14,7 +14,7 @@
 
 const fs = require('fs');
 const config = require('../../config/config.json'); // Goes 2 folders back to get config file.
-const truthCounter = require('../../config/truthCounter.json');
+const truthCounter = require('../../config/truth-counter.json');
 
 exports.name = "truth-counter"
 
@@ -32,11 +32,32 @@ exports.start = (client, logger) => {
                     message.channel.messages.fetch(origMessageID)
                         .then(fetchedMessage => {
                             truthCounter.currentCount++; // Only changes local object.
-                            truthCounterChannel.send(`> ${fetchedMessage.content} \n<@${fetchedMessage.author.id}> \nTruth Counter: ${truthCounter.currentCount}`);
-                            fs.writeFileSync(`${__dirname}/../../config/truthCounter.json`, JSON.stringify(truthCounter)); // Rewrites count in json.
-                        }).catch(error => {   
+                            truthCounterChannel.send(`> ${fetchedMessage.content} \n<@${fetchedMessage.author.id}>`);
+                            fs.writeFileSync(`${__dirname}/../../config/truth-counter.json`, JSON.stringify(truthCounter)); // Rewrites count in json.
+                            message.channel.send(`Truth Counter: ${truthCounter.currentCount}`); // Sends truth count to message's channel.
+                        }).catch(error => { 
                             message.channel.send('Could not fetch message you replied to');
                             logger.error(`Could not fetch message you replied to \n${error}`);
+                        });
+                }
+                else if(message.channel == truthCounterChannel && message.content.includes('-1')) // To remove a '+1' quote.
+                {
+                    // Remove a count from the truth counter, remove message from truth counter channel, send new count into message channel.
+                    var badTruthID = message.reference.messageID;
+
+                    message.channel.messages.fetch(badTruthID)
+                        .then(badTruthMessage => {
+                            badTruthMessage.delete()
+                                .then(deletedMsg => {
+                                    logger.info(`Deleted "${badTruthMessage.content.split("\n")[0]}" from truth counter for being bad`);
+                                    message.delete();
+                                    truthCounter.currentCount--;
+                                    fs.writeFileSync(`${__dirname}/../../config/truth-counter.json`, JSON.stringify(truthCounter)); // Rewrites count in json.
+                                });
+                        }).catch(error => {
+                            message.channel.send('Could not delete message and fix count.');
+                            logger.error(`Could not delete bad truth you replyied "-1" to \n${error}`);
+
                         });
                 }
             });
