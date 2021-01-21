@@ -31,7 +31,7 @@ exports.start = (client, logger) => {
             });
         
             // Job that'll run every hour
-            var job = schedule.scheduleJob("0 * * * * *", () => {
+            var job = schedule.scheduleJob("* */1 * * *", () => {
         
                 logger.info(`Checking for updated sale stats...`);
         
@@ -46,17 +46,6 @@ exports.start = (client, logger) => {
                         json: true
                     },
                     (error, response, body) => {
-
-                        if(body === undefined)
-                        {
-                            console.log(game.name);
-                            console.log(body);
-                            console.log(`https://store.steampowered.com/api/appdetails?appids=${game.id}`);
-                            console.log(error);
-                            return;
-                        }
-                        
-
                         var data = body[game.id].data;
         
                         // First we're going to check and make sure these price variables exist, if not we'll send a message notifying the server
