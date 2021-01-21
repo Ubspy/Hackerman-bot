@@ -14,7 +14,9 @@ var schedule = require('node-schedule');
 var clear = require('../commands/clear.js');
 var config = require("../../config/config.json");
 
-module.exports = (client, logger) => {
+exports.name = "command-channel-clearer";
+
+exports.start = (client, logger) => {
     // Fetch the commands channel using the config
     client.channels.fetch(config.botCommandsChannelID)
         .then(commandsChannel => {

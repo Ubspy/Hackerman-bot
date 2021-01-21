@@ -161,7 +161,8 @@ client.login(config.discordToken)
 
 		// Run every util giving it the logger, and the logged in client
 		utils.forEach(util => {
-			util(client, logger);
+			util.start(client, logger);
+			logger.info(`Started util ${util.name}`);
 		});
 
 	}).catch(error => {

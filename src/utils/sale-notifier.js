@@ -17,7 +17,9 @@ const schedule = require('node-schedule');
 const config = require('../../config/config.json'); // Goes 2 folders back to get config file
 const wishlist = require('../../config/wishlist.json');
 
-module.exports = (client, logger) => {
+exports.name = "sale-notifier";
+
+exports.start = (client, logger) => {
 
     // Here we fetch the announcement channel
     client.channels.fetch(config.announcementChannelID)
@@ -29,7 +31,7 @@ module.exports = (client, logger) => {
             });
         
             // Job that'll run every hour
-            var job = schedule.scheduleJob("0 */1 * * *", () => {
+            var job = schedule.scheduleJob("0 * * * * *", () => {
         
                 logger.info(`Checking for updated sale stats...`);
         
@@ -44,6 +46,17 @@ module.exports = (client, logger) => {
                         json: true
                     },
                     (error, response, body) => {
+
+                        if(body === undefined)
+                        {
+                            console.log(game.name);
+                            console.log(body);
+                            console.log(`https://store.steampowered.com/api/appdetails?appids=${game.id}`);
+                            console.log(error);
+                            return;
+                        }
+                        
+
                         var data = body[game.id].data;
         
                         // First we're going to check and make sure these price variables exist, if not we'll send a message notifying the server

@@ -16,8 +16,10 @@ const fs = require('fs');
 const config = require('../../config/config.json'); // Goes 2 folders back to get config file.
 const truthCounter = require('../../config/truthCounter.json');
 
+exports.name = "truth-counter"
+
 // Returns a function with parameters client and logger.
-module.exports = (client, logger) => {
+exports.start = (client, logger) => {
     // Fetches the truth counter's quote channel id, and then checks messages
     client.channels.fetch(config.truthCounterChannelID)
         .then(truthCounterChannel => {
