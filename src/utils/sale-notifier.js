@@ -52,7 +52,7 @@ exports.start = (client, logger) => {
                         // This is first because if this returns true the other else ifs shouldn't even be evaluated
                         if(data.price_overview === undefined)
                         {
-                            announcementChannel.send(`Could not get the price data for the game ${game.name}, with id ${game.id} and url ${game.link}\nPlease make sure this is a proper game!`).catch(error => {
+                            announcementChannel.send(`Could not get the price data for the game ${game.name}, with id ${game.id} and url \n${game.link} \nPlease make sure this is a proper game!`).catch(error => {
                                 logger.error(error);
                             });
                         }
@@ -65,7 +65,7 @@ exports.start = (client, logger) => {
                         else if(data.price_overview.discount_percent > 0 && !game.onSale)
                         {
                             // Adds game to announcement message
-                            announcementMessage += (`${game.name} is ${data.price_overview.discount_percent}% off!. It's on sale from ${formatter.format(data.price_overview.initial / 100)} to ${formatter.format(data.price_overview.final / 100)} ${game.link}\n`);
+                            announcementMessage += (`${game.name} is ${data.price_overview.discount_percent}% off!. It's on sale from ${formatter.format(data.price_overview.initial / 100)} to ${formatter.format(data.price_overview.final / 100)} \n${game.link}\n`);
         
                             // Changes game's sale state to true and writes to the file
                             game.onSale = true;
