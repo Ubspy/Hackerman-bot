@@ -21,7 +21,7 @@ exports.start = (client, logger) => {
     client.channels.fetch(config.botCommandsChannelID)
         .then(commandsChannel => {
             // This job will run every sunday at 6 PM
-            var clearJob = schedule.scheduleJob('* 18 * * 0', () => {
+            var clearJob = schedule.scheduleJob('? 18 * * 0', () => {
 				commandsChannel.send('Performing weekly maintinance...')
 					.then(message => {
 						// TODO: this doesn't work :(
