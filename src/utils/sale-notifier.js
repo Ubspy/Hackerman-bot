@@ -31,7 +31,7 @@ exports.start = (client, logger) => {
             });
         
             // Job that'll run every hour
-            var job = schedule.scheduleJob("0 */1 * * *", () => {
+            var job = schedule.scheduleJob("o * * * *", () => {
         
                 logger.info(`Checking for updated sale stats...`);
 
@@ -92,7 +92,6 @@ exports.start = (client, logger) => {
                                     // Error catching
                                     logger.error(error);
                                 });  
-                        }
                         }
                     });
                 });           
