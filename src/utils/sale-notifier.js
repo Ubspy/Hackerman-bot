@@ -34,12 +34,7 @@ exports.start = (client, logger) => {
             var job = schedule.scheduleJob("0 */1 * * *", () => {
         
                 logger.info(`Checking for updated sale stats...`);
-        
-                // Initial blank announcement message
-                var announcementMessage = "";
-        
-                var responseCount = 0;
-        
+
                 wishlist.games.forEach(game => {
                     request({
                         url: `https://store.steampowered.com/api/appdetails?appids=${game.id}`,
@@ -47,6 +42,9 @@ exports.start = (client, logger) => {
                     },
                     (error, response, body) => {
                         var data = body[game.id].data;
+
+                        // Initial blank announcement message
+                        var announcementMessage = "";
         
                         // First we're going to check and make sure these price variables exist, if not we'll send a message notifying the server
                         // This is first because if this returns true the other else ifs shouldn't even be evaluated
@@ -82,29 +80,19 @@ exports.start = (client, logger) => {
                             logger.info(`Updated the games file, ${game.name} is no longer on sale`);
                         }
         
-                        // Keeping track of the number of times this loop as run
-                        responseCount++;
-        
-                        // Foreach is asynchronous, so we can't just have this outside of the loop
-                        if(responseCount == wishlist.games.length)
+                        // If there is a message to announce, send it
+                        if(announcementMessage != "")
                         {
-                            if(announcementMessage != "")
-                            {
-                                // As long as there's an announcement message, we send it
-                                announcementChannel.send(announcementMessage)
-                                    .then(message => {
-                                        // Here we delete the embeds on the message, and add a log message
-                                        message.suppressEmbeds();
-                                        logger.info(`Notified users about game sales!`); // TODO: custom, smaller embed
-                                    }).catch(error => {
-                                        // Error catching
-                                        logger.error(error);
-                                    });  
-                            }
-                            else
-                            {
-                                logger.log(`No sales to update`);
-                            }
+                            // As long as there's an announcement message, we send it
+                            announcementChannel.send(announcementMessage)
+                                .then(message => {
+                                    // Here we delete the embeds on the message, and add a log message
+                                    message.suppressEmbeds();
+                                }).catch(error => {
+                                    // Error catching
+                                    logger.error(error);
+                                });  
+                        }
                         }
                     });
                 });           
