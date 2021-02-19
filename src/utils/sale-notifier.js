@@ -31,7 +31,7 @@ exports.start = (client, logger) => {
             });
         
             // Job that'll run every hour
-            var job = schedule.scheduleJob("o * * * *", () => {
+            var job = schedule.scheduleJob("0 * * * *", () => {
         
                 logger.info(`Checking for updated sale stats...`);
 
