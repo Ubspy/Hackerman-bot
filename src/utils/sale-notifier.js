@@ -45,10 +45,18 @@ exports.start = (client, logger) => {
 
                         // Initial blank announcement message
                         var announcementMessage = "";
-        
-                        // First we're going to check and make sure these price variables exist, if not we'll send a message notifying the server
-                        // This is first because if this returns true the other else ifs shouldn't even be evaluated
-                        if(data.price_overview === undefined)
+
+			// Ok so apparently sometimes just page data won't exist? So first we need to check for that incase it fails
+			// We want to check this first, since if there's no data, we can't check price_overview, it will cause an error
+			if(data === undefined)
+			{
+				logger.error(`Game ${game.name} with id ${game.id} could not get any data from \n${game.link} \nPlease check this link`);
+				announcementChannel.send(`Count not get the game data for the game ${game.name}, with id ${game.id} and url \n${game.link} \nPlease make sure this is an actual game!`).catch(errror => {
+					logger.error(error);
+				});
+			}
+                        // Then we need to check and make sure there's a price overview, if you put a game without a price like an upcoming release, or a game removed from steam, there won't be price data
+                        else if(data.price_overview === undefined)
                         {
                             announcementChannel.send(`Could not get the price data for the game ${game.name}, with id ${game.id} and url \n${game.link} \nPlease make sure this is a proper game!`).catch(error => {
                                 logger.error(error);
